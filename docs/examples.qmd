@@ -216,7 +216,7 @@ A nonlinear transfer characteristic is locally linear near its bias point.
 The axes and legend are Matplotlib; the two original SVG traces are updated using the physical phase parameter.
 
 ```{python}
-#| label: mpl-phase-plot
+#| label: mpl-phase-cell
 import io
 import numpy as np
 import matplotlib.pyplot as plt
@@ -251,7 +251,7 @@ plt.close(fig)
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
  const init=()=>{
-  const el=document.querySelector('#mpl-phase-plot'),m=SlideAnimations;
+  const el=document.querySelector('#mpl-phase-plot[data-map]'),m=SlideAnimations;
   if(!el||el.dataset.bound)return;el.dataset.bound='1';
   const map=el.dataset.map.split(',').map(Number);
   const options={from:0,to:2*Math.PI,samples:181,map};
