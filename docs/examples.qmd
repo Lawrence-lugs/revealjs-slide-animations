@@ -93,6 +93,54 @@ For a p-type substrate; voltages relative to flat band (idealized).
 Data flow is indicated by the direction of the moving dashes.
 :::
 
+## Mermaid • build the datapath {#mermaid-build}
+
+::: {#mermaid-pipeline}
+
+```{mermaid}
+flowchart LR
+    F[Fetch] --> D[Decode]
+    D --> E[Execute]
+    E --> W[Writeback]
+    class F sa-fetch
+    class D sa-decode
+    class E sa-execute
+    class W sa-writeback
+```
+
+:::
+
+<span class="fragment sa-trigger" data-fragment-index="0"></span>
+<span class="fragment sa-trigger" data-fragment-index="1"></span>
+<span class="fragment sa-trigger" data-fragment-index="2"></span>
+<span class="fragment sa-trigger" data-fragment-index="3"></span>
+<span class="fragment sa-trigger" data-fragment-index="4"></span>
+
+<script type="application/json" data-sa-elements>
+{
+ "scope":"#mermaid-pipeline",
+ "targets":{
+   "F":".node.sa-fetch",
+   "D":".node.sa-decode",
+   "E":".node.sa-execute",
+   "W":".node.sa-writeback",
+   "FD":"path.LS-F.LE-D,path[id^='L_F_D_'],path[id^='L-F-D-'],path[data-id^='L_F_D_'],path[data-id^='L-F-D-']",
+   "DE":"path.LS-D.LE-E,path[id^='L_D_E_'],path[id^='L-D-E-'],path[data-id^='L_D_E_'],path[data-id^='L-D-E-']",
+   "EW":"path.LS-E.LE-W,path[id^='L_E_W_'],path[id^='L-E-W-'],path[data-id^='L_E_W_'],path[data-id^='L-E-W-']"
+ },
+ "initial":{"show":["F"]},
+ "steps":[
+   {"index":0,"state":{"show":["F","D","FD"],"flow":["FD"]}},
+   {"index":1,"state":{"show":["F","D","E","FD","DE"],"flow":["DE"]}},
+   {"index":2,"state":{"flow":["EW"]}},
+   {"index":3,"state":{"focus":["D","FD","DE"]}},
+   {"index":4,"state":{"focus":["E","DE","EW"]}}
+ ]
+}
+</script>
+
+<small>One Mermaid layout, five manual steps. First build the structure; then focus on existing stages. Only the selected connector flows.</small>
+
 ## Building an nMOS cross-section {#mosfet-build}
 
 <svg class="sa-svg" viewBox="0 0 1000 400" role="img" aria-label="Idealized planar nMOS construction: substrate, source and drain, oxide, gate, contacts, inversion channel">
@@ -163,35 +211,65 @@ A nonlinear transfer characteristic is locally linear near its bias point.
 })();
 </script>
 
-## Matplotlib • sinusoidal input {.magic-move}
+## Matplotlib • true phase shift {#mpl-phase}
+
+The axes and legend are Matplotlib; the two original SVG traces are updated using the physical phase parameter.
 
 ```{python}
-#| label: mpl-before
+#| label: mpl-phase-plot
+import io
 import numpy as np
 import matplotlib.pyplot as plt
-plt.rcParams.update({'svg.hashsalt':'slide-animations','svg.fonttype':'none','font.size':14})
+from IPython.display import HTML, display
+plt.rcParams.update({'svg.hashsalt':'slide-animations','svg.fonttype':'none','font.size':14,'path.simplify':False})
 t=np.linspace(0,2*np.pi,181)
-def wave(phase):
-    fig,ax=plt.subplots(figsize=(9,3.6))
-    ax.plot(t,np.sin(t+phase),color='#3977a8',lw=3,label='Input')
-    ax.plot(t,-0.7*np.sin(t+phase),color='#c67e6a',lw=3,label='Output')
-    ax.set(xlim=(0,2*np.pi),ylim=(-1.2,1.2),xlabel='Time',ylabel='Normalized voltage')
-    ax.grid(alpha=.18); ax.legend(loc='upper right'); fig.tight_layout(); plt.show()
-wave(0)
+fig,ax=plt.subplots(figsize=(9,3.6))
+a,=ax.plot(t,np.sin(t),color='#3977a8',lw=3,label='Input')
+b,=ax.plot(t,-0.7*np.sin(t),color='#c67e6a',lw=3,label='Output')
+a.set_gid('sa-mpl-input'); b.set_gid('sa-mpl-output')
+ax.set(xlim=(0,2*np.pi),ylim=(-1.2,1.2),xlabel='Time',ylabel='Normalized voltage')
+ax.grid(alpha=.18); ax.legend(loc='upper right'); fig.tight_layout()
+fig.canvas.draw()
+# Matplotlib display coordinates -> SVG points (72 dpi, inverted y).
+scale=72/fig.dpi
+origin=ax.transData.transform((0,0))*scale
+dx=ax.transData.transform((1,0))*scale-origin
+dy=ax.transData.transform((0,1))*scale-origin
+mapping=[origin[0],fig.get_figheight()*72-origin[1],dx[0],-dy[1]]
+buf=io.StringIO(); fig.savefig(buf,format='svg')
+svg=buf.getvalue().split('<svg',1)[1]
+display(HTML('<div id="mpl-phase-plot" class="sa-plot" data-map="'+','.join(str(x) for x in mapping)+'"><svg'+svg+'</div>'))
+plt.close(fig)
 ```
 
-## Matplotlib • phase advances {.magic-move}
+<span class="fragment sa-trigger" data-fragment-index="0"></span>
+<span class="fragment sa-trigger" data-fragment-index="1"></span>
+<span class="fragment sa-trigger" data-fragment-index="2"></span>
 
-```{python}
-#| label: mpl-after
-wave(np.pi/2)
-```
+<small>One click = a quarter-cycle phase advance. Amplitude and input/output gain stay fixed throughout.</small>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const init=()=>{
+  const el=document.querySelector('#mpl-phase-plot'),m=SlideAnimations;
+  if(!el||el.dataset.bound)return;el.dataset.bound='1';
+  const map=el.dataset.map.split(',').map(Number);
+  const options={from:0,to:2*Math.PI,samples:181,map};
+  m.bindState(el,{initial:{phase:0},steps:[0,1,2].map(index=>({index,state:{phase:(index+1)*Math.PI/2}})),duration:900,render:({phase})=>{
+    el.querySelector('#sa-mpl-input path').setAttribute('d',m.samplePath(x=>Math.sin(x+phase),options));
+    el.querySelector('#sa-mpl-output path').setAttribute('d',m.samplePath(x=>-.7*Math.sin(x+phase),options));
+    el.dataset.phase=String(phase);
+  }});
+ };
+ if(Reveal.isReady())init();else Reveal.on('ready',init);
+});
+</script>
 
 ## A plot is still a plot
 
-Magic Move works with successive SVG figures. No new graphing API is required.
+For a phase sweep, bias sweep or moving tangent, animate the underlying parameter and regenerate only the affected marks.
 
-Keep the axes, colors and plotting order stable so that the matcher can establish correspondence.
+Magic Move is a heuristic geometric morph, not a mathematical interpolator. Reserve it for compatible static figure transitions and inspect the intermediate frames.
 
 ## Seaborn • initial latency budget {.magic-move}
 

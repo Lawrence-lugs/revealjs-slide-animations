@@ -25,6 +25,15 @@
   }
   function attrs(element,values){for(const [key,value] of Object.entries(values))element.setAttribute(key,String(value));return element;}
   function moveAlongPath(element,path,p){const q=path.getPointAtLength(clamp(p)*path.getTotalLength());return attrs(element,{cx:q.x,cy:q.y});}
+  // Coordinate mapping for any affine plot/SVG, without a plotting dependency.
+  function samplePath(fn,{from=0,to=1,samples=181,map=[0,0,1,1]}={}) {
+    if(!Number.isInteger(samples)||samples<2)throw Error("samplePath: samples must be >= 2");
+    const [x0,y0,sx,sy]=map;
+    return Array.from({length:samples},(_,i)=>{
+      const x=lerp(from,to,i/(samples-1)),y=fn(x);
+      return (i?"L":"M")+(x0+sx*x).toFixed(4)+" "+(y0+sy*y).toFixed(4);
+    }).join(" ");
+  }
   const bindings=new Set();let deck=null;
   function sync(binding, animate) {
     if(!deck)return;
@@ -49,15 +58,69 @@
     bindings.add(binding);render(initial,element);binding.current=initial;sync(binding,false);
     return ()=>{binding.cancel?.();bindings.delete(binding);};
   }
+  // Animate existing elements, including asynchronously rendered Mermaid SVG.
+  // A target is a scoped CSS selector, not a diagram-specific object model.
+  function bindElements(element,{targets,initial={},steps=[]}) {
+    if(typeof element==="string")element=document.querySelector(element);
+    if(!element)throw Error("SlideAnimations: missing element scope");
+    let latest=initial, previous=new Set(), disposed=false, pending=false;
+    function apply(){
+      if(disposed)return;
+      const matches=Object.fromEntries(Object.entries(targets).map(([id,selector])=>[id,[...element.querySelectorAll(selector)]]));
+      const missing=Object.keys(matches).filter(id=>!matches[id].length);
+      element.dataset.saMissing=missing.join(",");
+      if(missing.length){
+        for(const el of previous)el.classList.remove("sa-element-hidden","sa-element-dim","sa-element-flow");
+        element.dataset.saReady="false";return;
+      }
+      element.dataset.saReady="true";
+      const visible=latest.show==null?null:new Set(latest.show);
+      const focus=latest.focus==null?null:new Set(latest.focus);
+      const flow=new Set(latest.flow??[]);
+      const flags=new Map();
+      for(const [key,els] of Object.entries(matches))for(const el of els){
+        const f=flags.get(el)??{show:false,focus:false,flow:false};
+        f.show ||= visible===null||visible.has(key);
+        f.focus ||= focus===null||focus.has(key);
+        f.flow ||= flow.has(key);flags.set(el,f);
+      }
+      for(const el of previous)if(!flags.has(el))el.classList.remove("sa-element","sa-element-hidden","sa-element-dim","sa-element-flow");
+      for(const [el,f] of flags){
+        el.classList.add("sa-element");
+        el.classList.toggle("sa-element-hidden",!f.show);
+        el.classList.toggle("sa-element-dim",f.show&&!f.focus);
+        el.classList.toggle("sa-element-flow",f.show&&f.flow);
+      }
+      previous=new Set(flags.keys());
+    }
+    const unbind=bindState(element,{initial,steps,duration:0,render:state=>{latest=state;apply();}});
+    // Mermaid may render or replace its SVG after Reveal.ready. Observe child
+    // changes only; our own class changes must not trigger another scan.
+    const observer=new MutationObserver(()=>{
+      if(pending)return;pending=true;
+      requestAnimationFrame(()=>{pending=false;apply();});
+    });
+    observer.observe(element,{childList:true,subtree:true});
+    return ()=>{disposed=true;observer.disconnect();unbind();for(const el of previous)el.classList.remove("sa-element","sa-element-hidden","sa-element-dim","sa-element-flow");delete element.dataset.saReady;delete element.dataset.saMissing;};
+  }
+  function registerElements(){
+    document.querySelectorAll('script[type="application/json"][data-sa-elements]').forEach(config=>{
+      if(config.dataset.saBound)return;
+      try{
+        const {scope,...options}=JSON.parse(config.textContent);
+        bindElements(scope,options);config.dataset.saBound="true";
+      }catch(e){console.error("SlideAnimations: invalid element configuration",e);}
+    });
+  }
   const api={id:"slide-animations",init(reveal){
     deck=reveal;
     const refresh=(animate)=>{for(const b of bindings)sync(b,animate);};
-    reveal.on("ready",()=>refresh(false));
+    reveal.on("ready",()=>{registerElements();refresh(false);});
     reveal.on("slidechanged",()=>refresh(false));
     reveal.on("fragmentshown",()=>refresh(true));
     reveal.on("fragmenthidden",()=>refresh(true));
-    if(reveal.isReady())refresh(false);
-  },clamp,lerp,ease,interpolate,tween,attrs,moveAlongPath,bindState};
+    if(reveal.isReady()){registerElements();refresh(false); }
+  },clamp,lerp,ease,interpolate,tween,attrs,moveAlongPath,bindState,bindElements,samplePath};
   root.SlideAnimations=api;
   if(typeof module!=="undefined")module.exports=api;
 })(typeof window!=="undefined"?window:globalThis);

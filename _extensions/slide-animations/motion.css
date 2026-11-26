@@ -53,3 +53,20 @@
  .reveal .fragment.custom.sa-focus {opacity:1!important;}
  .reveal .fragment.sa-draw {stroke-dashoffset:0!important;}
 }
+
+/* Generic element state adapter: also works with Mermaid's own SVG styling. */
+.reveal .sa-element {transition:opacity var(--sa-duration) var(--sa-ease);}
+.reveal .sa-element.sa-element-hidden {opacity:0!important;pointer-events:none;}
+.reveal .sa-element.sa-element-dim {opacity:var(--sa-dim)!important;}
+.reveal .sa-element-flow {stroke-dasharray:8 6!important;animation:sa-flow .9s linear infinite;animation-play-state:paused;}
+.reveal section.present .sa-element-flow:not(.sa-element-hidden) {animation-play-state:running;}
+.reveal section.present .fragment:not(.visible) .sa-element-flow {animation-play-state:paused;}
+.reveal .sa-plot svg {display:block;width:100%;height:auto;max-height:430px;margin:auto;}
+@media (prefers-reduced-motion:reduce) {
+ .reveal .sa-element {transition:none!important;}
+ .reveal .sa-element-flow {animation:none!important;}
+}
+@media print {
+ .reveal .sa-element {opacity:1!important;transition:none!important;}
+ .reveal .sa-element-flow {animation:none!important;}
+}

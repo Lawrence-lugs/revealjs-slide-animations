@@ -25,3 +25,8 @@ Install Quarto, Python and Node. Run `pip install -r requirements.txt`, `npm ins
 GitHub Pages: set Settings → Pages → Build and deployment → Source to GitHub Actions. The workflow renders both decks, runs tests and deploys main.
 
 The bundled docs stylesheet currently reproduces the supplied theme's relevant heading, layout and fragment rules. The core library is independent of the theme.
+
+## Nested lecture files
+Install from the directory containing the active _quarto.yml, not the shell workspace root unless it is a Quarto project. Quarto resolves ancestor extensions up to the project root. Render with `quarto render lectures/week01.qmd` from that root. A nested _quarto.yml is an independent project and needs its own installation; do not copy the extension into each lecture folder. See the usage guide and nested-project CI fixture.
+
+Mermaid uses its existing renderer. The generic `bindElements` adapter applies reveal, focus and flow states to selected SVG elements, including late-rendered diagrams. For scientific plots, `samplePath` with `bindState` animates actual parameters; Magic Move is not a physics-aware interpolator.

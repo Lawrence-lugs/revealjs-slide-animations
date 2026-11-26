@@ -27,6 +27,20 @@ format:
 
 Magic Move is optional. Omit it from the plugin list if you do not need it.
 
+## Install once at the Quarto project root
+
+```text
+workspace/
+  _quarto.yml
+  _extensions/
+    Lawrence-lugs/slide-animations/
+  lectures/
+    week01.qmd
+    week02.qmd
+```
+
+From the directory containing the active `_quarto.yml`, install the extension and run `quarto render lectures/week01.qmd`. Enable the plugin in that deck's front matter, or in project metadata for all Reveal decks. Quarto searches from the document directory up to its project root. A nested `_quarto.yml` creates a separate root; a workspace without a recognized project is not a shared extension installation. Inspect with `quarto inspect lectures/week01.qmd`; do not copy extensions beside every lecture. If using independent nested projects, install once per actual project.
+
 ## Use in native Reveal.js
 
 Copy the two files from the extension directory, load CSS and JS after Reveal, register the plugin.
@@ -179,6 +193,50 @@ SlideAnimations.moveAlongPath(circle, path, .5);
 
 The path helper targets SVG circle/ellipse coordinates in the same coordinate space. For arbitrary objects or differing transforms, calculate the appropriate coordinates yourself. For a time-domain plot, calculate the point from the physical time parameter rather than arc length.
 
+## Parameter-driven plots
+
+Use the existing plotting library to render the axes, labels, legends and initial traces. For Matplotlib, assign stable artist IDs with `line.set_gid("my-line")`, save as inline SVG and export the affine data-to-SVG transform. Use `bindState` and `samplePath` to regenerate only the paths from the interpolated parameter.
+
+```js
+const d = SlideAnimations.samplePath(
+  x => Math.sin(x + phase),
+  {from:0, to:2*Math.PI, samples:181,
+   map:[xOrigin,yOrigin,xScale,yScale]}
+);
+path.setAttribute("d", d);
+```
+
+This helper assumes affine (linear) axes. For log/polar axes or arbitrary curves, use the plotting library's own transform or a custom render callback. The Matplotlib example contains the full Python-to-SVG mapping. Never interpolate endpoint waveform geometry to represent a phase shift.
+
+## Animate Mermaid without changing its layout
+
+Wrap the original Mermaid cell in a uniquely identified div. Assign semantic classes in Mermaid, for example `class F sa-fetch`. Keep the full graph in one cell to avoid re-layout at every click. Inspect the rendered SVG to identify edges; Mermaid versions differ.
+
+```js
+SlideAnimations.bindElements("#diagram", {
+  targets: {a:".node.sa-a", b:".node.sa-b"},
+  initial: {show:["a"]},
+  steps: [
+    {index:0,state:{show:["a","b"]}},
+    {index:1,state:{focus:["b"]}}
+  ]
+});
+```
+
+The API also accepts a raw JSON script with `type="application/json" data-sa-elements` and a `scope` selector, as in the example deck. It waits for late-rendered SVG and reapplies state when the diagram is replaced.
+
+## Element-state API
+
+Each step is a complete state, not a delta.
+
+| Field | Meaning |
+|---|---|
+| show | Only these target names visible; omit for all |
+| focus | Dim all other visible targets; omit for no dim |
+| flow | Apply passive dashed animation to the named SVG paths |
+
+Use ordinary fragments with matching indices as triggers. Select edge labels separately when present; flow applies only to paths. Inspect `data-sa-ready` and `data-sa-missing` on the wrapper: unresolved targets leave the diagram static rather than half-hidden. Do not rely on generated numeric IDs or text matching.
+
 ## Magic Move: SVG plots
 
 ```markdown
@@ -198,7 +256,7 @@ fig-format: svg
 
 Set a fixed Matplotlib `svg.hashsalt`, identical figure size and axis limits, and use the same plot colors and element order.
 
-See the examples deck for executable Matplotlib and Seaborn sources.
+See the examples deck for the Seaborn geometric transition and the separate parameter-driven Matplotlib example. Magic Move is not suitable for exact phase shifts or other physically meaningful intermediate states. Verify both endpoints and intermediate frames; if any trace fails to move, replace the morph with a state-driven update.
 
 ## Magic Move: code and equations
 
