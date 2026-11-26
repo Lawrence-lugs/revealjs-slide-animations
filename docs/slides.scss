@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+$motif-color: #fbe7c9;
+$background-color: #1a1a1a;
+$text-color: #000000;
+$presentation-title-slide-text-align: left;
+/*-- scss:rules --*/
+body {background-color:$background-color;color:$text-color;}
+.reveal {color:$text-color;}
+.reveal h1,.reveal h2,.reveal h3,.reveal h4,.reveal h5,.reveal h6 {color:$text-color;text-transform:none;}
+.reveal .slides section > h2 {border-bottom:4px solid $motif-color;padding-bottom:.5em;text-align:left;}
+.reveal .footer {border-top:4px solid $motif-color;padding-top:.6rem;box-sizing:border-box;font-size:16px;}
+.reveal .slide-number {display:none;}
+.columns {display:flex!important;}
+.column.vcentered {display:flex;flex-direction:column;justify-content:center;align-items:center;}
+.reveal .slides section.level2.present {display:flex!important;flex-direction:column;}
+.reveal .slides section.level2 > .columns {flex:1 1 auto;}
+.reveal .slides section .column {display:flex;flex-direction:column;}
+.reveal .slides section.level2 > .code-copy-outer-scaffold,.reveal .slides section.level2 > pre,.reveal .slides section.level2 > .cell,.reveal .slides section.level2 > figure,.reveal .slides section .column > .code-copy-outer-scaffold,.reveal .slides section .column > pre,.reveal .slides section .column > .cell,.reveal .slides section .column > figure {flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;}
+.reveal .slides section .column > .cell {align-items:center;}
+.reveal .slides section .column > .cell .cell-output-display,.reveal .slides section .column > .cell .cell-output-display > div {width:100%;display:flex;justify-content:center;}
+.reveal .slides section .column > .cell figure {margin-left:auto;margin-right:auto;}
+.reveal .slides section .column > figure {align-self:center;}
+.reveal pre,.reveal pre code,.reveal pre.sourceCode code {white-space:pre-wrap;overflow-wrap:break-word;overflow-x:hidden;}
+.reveal .fragment.red-in-then-semi-out.current-fragment {color:#E01B24;opacity:1;visibility:visible;}
+.reveal .fragment.red-in-then-semi-out.visible:not(.current-fragment) {color:#8f8f8f;opacity:.3;}
+.reveal .slides section table {font-size:1em;line-height:1.2;}
+.reveal .slides section table th,.reveal .slides section table td {padding:.28em .55em;vertical-align:top;}

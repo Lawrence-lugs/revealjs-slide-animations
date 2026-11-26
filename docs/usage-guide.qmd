@@ -1,0 +1,266 @@
+---
+title: "Slide Animations — usage guide"
+subtitle: "A compact API for presenter-controlled explanations"
+---
+
+## Design contract
+
+- Reveal.js owns all slide and fragment navigation.
+- CSS handles simple movement and visual emphasis.
+- JS handles coupled numerical or geometric state.
+- Magic Move handles compatible SVG, code and equation transitions.
+- No global timeline, rendering framework, autoplay or mandatory animation.
+
+## Install in Quarto
+
+```bash
+quarto add Lawrence-lugs/revealjs-slide-animations
+quarto add emilhvitfeldt/quarto-revealjs-magic-move
+```
+
+```yaml
+format:
+  revealjs:
+    revealjs-plugins: [slide-animations, magic-move]
+    theme: [white, slides.scss]
+```
+
+Magic Move is optional. Omit it from the plugin list if you do not need it.
+
+## Use in native Reveal.js
+
+Copy the two files from the extension directory, load CSS and JS after Reveal, register the plugin.
+
+```html
+<link rel="stylesheet" href="motion.css">
+<script src="motion.js"></script>
+<script>
+Reveal.initialize({plugins:[SlideAnimations]});
+</script>
+```
+
+The exported global is `SlideAnimations`. No additional runtime dependencies.
+
+## Fragment entrances
+
+```markdown
+::: {.fragment .sa-enter-up}
+One concept per click.
+:::
+```
+
+::: {.sa-card .fragment .sa-enter-up}
+Enter upward: `sa-enter-up`
+:::
+
+::: {.sa-card .fragment .sa-enter-left}
+Enter from left: `sa-enter-left`
+:::
+
+::: {.sa-card .fragment .sa-enter-scale}
+Enter with subtle scale: `sa-enter-scale`
+:::
+
+## Cards and current focus
+
+```markdown
+::: {.sa-card .fragment .custom .sa-focus}
+**Concept A**
+
+Supporting detail.
+:::
+```
+
+Wrap siblings in `.sa-cards` for consistent gaps. Use `.sa-focus` with `.custom` to keep inactive cards visible.
+
+::: {.sa-cards}
+
+::: {.sa-card .fragment .custom .sa-focus}
+**First** — available, but emphasized only at the current step.
+:::
+
+::: {.sa-card .fragment .custom .sa-focus}
+**Second** — focus moves without shifting layout.
+:::
+
+:::
+
+## Highlight existing text
+
+```markdown
+[This term matters]{.fragment .custom .sa-highlight}
+```
+
+[This term matters]{.fragment .custom .sa-highlight}
+
+[Then this term matters]{.fragment .custom .sa-highlight}
+
+Both remain readable. Only the current fragment changes color.
+
+## Drawing and flow
+
+```html
+<path class="fragment sa-draw" pathLength="1"
+      d="M10 40 H250" stroke="currentColor"
+      fill="none" />
+<path class="fragment sa-flow" d="M10 90 H250"
+      stroke="currentColor" fill="none" />
+```
+
+<svg class="sa-svg" viewBox="0 0 600 120" style="max-height:130px"><path class="fragment sa-draw sa-slow" pathLength="1" d="M40 30 H560" stroke="#3977a8" stroke-width="5" fill="none"/><path class="fragment sa-flow" d="M40 90 H560" stroke="#c67e6a" stroke-width="5" fill="none"/></svg>
+
+Draw uses normalized path length. Flow is passive CSS, paused when the slide is inactive or its fragment hidden.
+
+## Layout morphs: use Auto-Animate
+
+```markdown
+## Step A {auto-animate="true"}
+
+<div data-id="block">Same object</div>
+
+## Step B {auto-animate="true"}
+
+<div data-id="block" style="width:70%">Same object</div>
+```
+
+Keep stable `data-id` values. Use a new slide for an actual layout change; use fragments for incremental content on one layout.
+
+## General numerical interpolation
+
+```js
+const m = SlideAnimations;
+m.lerp(0, 10, .5); // 5
+m.interpolate({x:0,y:2}, {x:10,y:4}, .5);
+const cancel = m.tween({
+  from: 0, to: 1, duration: 500,
+  update: p => draw(p)
+});
+// cancel() interrupts the animation
+```
+
+Numbers, equal-length arrays and plain objects with stable keys interpolate recursively. Non-numeric leaves switch at the endpoint. Do not use tween to create a presentation timeline.
+
+## Bind state to presenter steps
+
+```js
+SlideAnimations.bindState('#diagram', {
+  initial: {x: 0},
+  steps: [
+    {index: 0, state: {x: 1}},
+    {index: 1, state: {x: 2}}
+  ],
+  duration: 650,
+  render: ({x}, element) => update(element, x)
+});
+```
+
+Create corresponding native fragments with explicit indices. Register after Reveal's ready event. The API returns an unbind function. Navigation reconstructs the selected state; interrupted transitions start from the current interpolated state.
+
+## A state-driven example
+
+<svg id="state-demo" class="sa-svg" viewBox="0 0 600 130" style="max-height:150px"><path d="M50 65 H550" stroke="currentColor" stroke-opacity=".25" stroke-width="4"/><circle r="14" cy="65" cx="50" fill="#c67e6a"/><text x="50" y="115" font-size="19">0%</text></svg>
+<span class="fragment sa-trigger" data-fragment-index="0"></span>
+<span class="fragment sa-trigger" data-fragment-index="1"></span>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const init=()=>SlideAnimations.bindState('#state-demo',{initial:{p:0},steps:[{index:0,state:{p:.5}},{index:1,state:{p:1}}],render:({p},el)=>{el.querySelector('circle').setAttribute('cx',50+500*p);el.querySelector('text').textContent=Math.round(p*100)+'%';}});
+ if(Reveal.isReady())init();else Reveal.on('ready',init);
+});
+</script>
+
+Click forward or backward. The marker and numeric label derive from the same driver.
+
+## SVG utilities
+
+```js
+SlideAnimations.attrs(circle, {cx: 100, cy: 50});
+SlideAnimations.moveAlongPath(circle, path, .5);
+```
+
+The path helper targets SVG circle/ellipse coordinates in the same coordinate space. For arbitrary objects or differing transforms, calculate the appropriate coordinates yourself. For a time-domain plot, calculate the point from the physical time parameter rather than arc length.
+
+## Magic Move: SVG plots
+
+```markdown
+## Before {.magic-move}
+
+[Python cell producing an SVG]
+
+## After {.magic-move}
+
+[Python cell producing the next SVG]
+```
+
+```yaml
+jupyter: python3
+fig-format: svg
+```
+
+Set a fixed Matplotlib `svg.hashsalt`, identical figure size and axis limits, and use the same plot colors and element order.
+
+See the examples deck for executable Matplotlib and Seaborn sources.
+
+## Magic Move: code and equations
+
+````markdown
+::: magic-move
+
+```python
+x = 1
+```
+
+```python
+x = 1 + 2
+```
+
+:::
+````
+
+For equations, use consecutive display-math blocks inside the same div. Test the exact renderer and content you use; token matching is heuristic.
+
+## Magic Move limitations
+
+- Matplotlib scatter markers often use SVG `<use>` glyphs, which may not morph.
+- Clipping IDs and transformed ancestor groups can break correspondence.
+- Dynamic SVG created after Reveal is ready may not be picked up.
+- Diagram topology changes may require explicit semantic state mapping.
+- A visually correct fallback is preferable to a misleading morph.
+
+## Style inheritance
+
+```css
+.reveal {
+  --sa-duration: 360ms;
+  --sa-distance: .65em;
+  --sa-accent: #c67e6a;
+  --sa-dim: .38;
+  --sa-card-gap: .35em;
+}
+```
+
+No global font family, heading reset, column override or background. Card colors derive from current text color and accent. Use `.sa-fast` or `.sa-slow` on individual fragments to override duration.
+
+## Agent workflow
+
+1. Read the deck, identify teaching intent and verify formulas.
+2. Identify one focal change per step; keep reading targets stationary.
+3. Choose the simplest native or library primitive.
+4. Implement explicit fragment states and test reversibility.
+5. Inspect settled and intermediate states; remove decorative motion.
+
+Skill: `.agents/skills/revealjs-slide-animations/SKILL.md`.
+
+## Build and verify
+
+```bash
+pip install -r requirements.txt
+npm install
+bash scripts/build.sh
+npm test
+npx playwright install chromium
+npm run test:browser
+```
+
+Verify forward, backward, direct jumps, rapid interruption and reduced motion. Browser tests are not substitutes for inspecting the slides visually.
+
+[Examples](examples.html)

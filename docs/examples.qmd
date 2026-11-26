@@ -1,0 +1,256 @@
+---
+title: "Motion with meaning"
+subtitle: "Reveal.js animation examples • advance with the arrow keys"
+jupyter: python3
+---
+
+## From a title to an explanation {auto-animate="true"}
+
+::: {style="margin-top:2.6em;text-align:center"}
+<h3 data-id="intro-title" style="font-size:1.55em">A processor is a pipeline</h3>
+:::
+
+## From a title to an explanation {auto-animate="true"}
+
+<h3 data-id="intro-title" style="text-align:left">A processor is a pipeline</h3>
+
+::: {.fragment .sa-enter-up}
+- Fetch the instruction.
+:::
+
+::: {.fragment .sa-enter-up}
+- Decode the operation.
+:::
+
+::: {.fragment .sa-enter-up}
+- Execute and commit the result.
+:::
+
+## A pipeline, one stage at a time
+
+::: {.sa-cards style="grid-template-columns:repeat(3,1fr);margin-top:1.2em"}
+
+::: {.sa-card .fragment .sa-enter-up}
+**01 — Fetch**
+
+<small>Retrieve the instruction at the program counter.</small>
+:::
+
+::: {.sa-card .fragment .sa-enter-up}
+**02 — Decode**
+
+<small>Identify the operation and its source operands.</small>
+:::
+
+::: {.sa-card .fragment .sa-enter-up}
+**03 — Execute**
+
+<small>Compute the result using the selected functional unit.</small>
+:::
+
+:::
+
+## MOS capacitor regimes {#mos-regimes}
+
+For a p-type substrate; voltages relative to flat band (idealized).
+
+::: {.sa-cards}
+
+::: {.sa-card .fragment .custom .sa-focus}
+**01　Accumulation**　 <small>\(V_G < V_{FB}\)</small>
+
+<small>The gate attracts majority carriers. Holes crowd the surface.</small>
+:::
+
+::: {.sa-card .fragment .custom .sa-focus}
+**02　Depletion**　 <small>\(V_{FB}<V_G<V_{TH}\)</small>
+
+<small>Holes are repelled. Ionized acceptors remain in the depletion region.</small>
+:::
+
+::: {.sa-card .fragment .custom .sa-focus}
+**03　Inversion**　 <small>\(V_G>V_{TH}\)</small>
+
+<small>Electrons accumulate at the surface, forming an n-type channel.</small>
+:::
+
+:::
+
+## Data travels, labels stay still
+
+<svg class="sa-svg" viewBox="0 0 900 290" role="img" aria-label="Three pipeline stages connected by data flow arrows">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#c67e6a"/></marker></defs>
+<g stroke="currentColor" stroke-width="2" fill="#fbe7c9" fill-opacity=".35">
+<rect x="30" y="80" width="220" height="100" rx="12"/><rect x="340" y="80" width="220" height="100" rx="12"/><rect x="650" y="80" width="220" height="100" rx="12"/>
+</g>
+<g font-size="25" text-anchor="middle"><text x="140" y="139">Fetch</text><text x="450" y="139">Decode</text><text x="760" y="139">Execute</text></g>
+<path class="fragment sa-draw sa-slow" data-fragment-index="0" pathLength="1" d="M250 130 H335" stroke="#c67e6a" stroke-width="4" fill="none"/>
+<path class="fragment sa-flow" data-fragment-index="1" d="M250 130 H335" stroke="#c67e6a" stroke-width="4" fill="none" marker-end="url(#arr)"/>
+<path class="fragment sa-flow" data-fragment-index="2" d="M560 130 H645" stroke="#c67e6a" stroke-width="4" fill="none" marker-end="url(#arr)"/>
+</svg>
+
+::: {.fragment .sa-enter-up fragment-index="2"}
+Data flow is indicated by the direction of the moving dashes.
+:::
+
+## Building an nMOS cross-section {#mosfet-build}
+
+<svg class="sa-svg" viewBox="0 0 1000 400" role="img" aria-label="Idealized planar nMOS construction: substrate, source and drain, oxide, gate, contacts, inversion channel">
+<g font-size="19" text-anchor="middle">
+<g><rect x="60" y="165" width="880" height="195" rx="4" fill="#edcfb7" stroke="#ab7863" stroke-width="2"/><text x="500" y="300">p-type silicon substrate (body)</text></g>
+<g class="fragment sa-enter-up" data-fragment-index="0"><rect x="120" y="165" width="220" height="90" rx="8" fill="#a7c9e6" stroke="#4378a2"/><rect x="660" y="165" width="220" height="90" rx="8" fill="#a7c9e6" stroke="#4378a2"/><text x="230" y="220">n+ source</text><text x="770" y="220">n+ drain</text></g>
+<g class="fragment sa-enter-up" data-fragment-index="1"><rect x="340" y="144" width="320" height="21" fill="#f4e1a1" stroke="#b99b45"/><path d="M660 154 H720 L750 115" fill="none" stroke="#b99b45" stroke-width="2"/><text x="830" y="110">Gate oxide</text></g>
+<g class="fragment sa-enter-up" data-fragment-index="2"><rect x="340" y="75" width="320" height="69" rx="3" fill="#c2c4ca" stroke="#666"/><text x="500" y="118">Gate electrode</text></g>
+<g class="fragment sa-enter-up" data-fragment-index="3" stroke="#555" stroke-width="5"><path d="M230 165 V55 M770 165 V55 M500 75 V20 M940 300 H975"/><g stroke="none"><text x="230" y="43">S</text><text x="770" y="43">D</text><text x="500" y="16">G</text><text x="985" y="330">B</text></g></g>
+<g class="fragment sa-enter-up" data-fragment-index="4"><rect x="340" y="165" width="320" height="13" fill="#4378a2"/><path d="M345 187 H655" stroke="#4378a2" stroke-width="2" stroke-dasharray="4 4"/><text x="500" y="210">Inversion channel (on state)</text></g>
+</g></svg>
+
+<small>Conceptual cross-section, not to scale. The last step represents electrical inversion, not another fabrication layer.</small>
+
+## Small-signal approximation {#small-signal}
+
+A nonlinear transfer characteristic is locally linear near its bias point.
+
+<svg class="sa-svg" viewBox="0 0 1040 380" role="img" aria-label="Nonlinear characteristic and tangent with synchronized input and output sine signals">
+<g stroke="currentColor" opacity=".35" stroke-width="1.5" fill="none"><path d="M65 30 V300 H480 M575 30 V155 H1000 M575 200 V325 H1000"/><path d="M575 92 H1000 M575 262 H1000" stroke-dasharray="4 5"/></g>
+<g font-size="17"><text x="70" y="20">Normalized current</text><text x="430" y="320">VGS</text><text x="575" y="20">Input vgs</text><text x="575" y="190">Output Δid</text><text x="970" y="350">t</text></g>
+<path id="transfer" fill="none" stroke="#3977a8" stroke-width="3"/>
+<path id="tangent" fill="none" stroke="#c67e6a" stroke-width="3" stroke-dasharray="7 5"/>
+<path id="projection" fill="none" stroke="#888" stroke-dasharray="4 4"/>
+<circle id="q-dot" r="6" fill="#222"/><circle id="signal-dot" r="7" fill="#c67e6a"/>
+<path id="input-wave" fill="none" stroke="#3977a8" stroke-width="3"/>
+<path id="output-wave" fill="none" stroke="#3977a8" stroke-width="3"/>
+<path id="linear-wave" fill="none" stroke="#c67e6a" stroke-width="2.5" stroke-dasharray="7 5"/>
+<circle id="input-dot" r="5" fill="#c67e6a"/><circle id="output-dot" r="5" fill="#c67e6a"/>
+<g font-size="16"><text x="90" y="350" fill="#3977a8">Blue: exact square law</text><text x="290" y="350" fill="#c67e6a">Dashed: tangent</text><text id="amp-label" x="575" y="375"/></g>
+</svg>
+
+<span class="fragment sa-trigger" data-fragment-index="0"></span>
+<span class="fragment sa-trigger" data-fragment-index="1"></span>
+<span class="fragment sa-trigger" data-fragment-index="2"></span>
+<span class="fragment sa-trigger" data-fragment-index="3"></span>
+
+<small>Click to excite the device, reduce the amplitude, then sweep through positive and negative phases. \(I_D=kV_{OV}^2/2\), \(g_m=kV_{OV}\); normalized \(k=2,\ V_{OV,Q}=1\).</small>
+
+<script>
+(function(){
+ const init=()=>{
+ const m=window.SlideAnimations,svg=document.querySelector('#small-signal svg');
+ if(!m||!svg||svg.dataset.bound)return;svg.dataset.bound='1';
+ const get=id=>svg.querySelector('#'+id), xy=(x,y)=>[65+207*x,300-72*y], f=x=>Math.max(0,x)**2;
+ const make=(n,fn)=>Array.from({length:n},(_,i)=>{const [x,y]=fn(i/(n-1));return (i?'L':'M')+x.toFixed(2)+' '+y.toFixed(2)}).join(' ');
+ const set=(id,a)=>m.attrs(get(id),a), point=(id,p)=>set(id,{cx:p[0],cy:p[1]});
+ set('transfer',{d:make(150,p=>xy(2*p,f(2*p)))});
+ set('tangent',{d:make(2,p=>xy(.5+p,2*(.5+p)-1))});point('q-dot',xy(1,1));
+ m.bindState(svg,{initial:{a:0,phase:0},steps:[
+ {index:0,state:{a:.35,phase:Math.PI/2}},
+ {index:1,state:{a:.1,phase:Math.PI/2}},
+ {index:2,state:{a:.1,phase:Math.PI*1.5}},
+ {index:3,state:{a:.1,phase:Math.PI*2.5}}
+ ],duration:850,render:({a,phase})=>{
+ const v=a*Math.sin(phase), q=xy(1+v,f(1+v));point('signal-dot',q);
+ set('projection',{d:'M65 '+q[1]+' H'+q[0]+' V300'});
+ const vin=p=>a*Math.sin(4*Math.PI*p+phase), out=p=>f(1+vin(p))-1;
+ set('input-wave',{d:make(160,p=>[575+425*p,92-145*vin(p)])});
+ set('output-wave',{d:make(160,p=>[575+425*p,262-78*out(p)])});
+ set('linear-wave',{d:make(160,p=>[575+425*p,262-78*2*vin(p)])});
+ point('input-dot',[575,92-145*v]);point('output-dot',[575,262-78*(f(1+v)-1)]);
+ get('amp-label').textContent='Amplitude: '+a.toFixed(2)+' V   |   instantaneous nonlinear error: '+(v*v).toFixed(3);
+ svg.dataset.amplitude=String(a);
+ }});
+ };
+ if(window.Reveal?.isReady())init();else document.addEventListener('DOMContentLoaded',()=>{if(window.Reveal?.isReady())init();else window.Reveal?.on('ready',init);});
+})();
+</script>
+
+## Matplotlib • sinusoidal input {.magic-move}
+
+```{python}
+#| label: mpl-before
+import numpy as np
+import matplotlib.pyplot as plt
+plt.rcParams.update({'svg.hashsalt':'slide-animations','svg.fonttype':'none','font.size':14})
+t=np.linspace(0,2*np.pi,181)
+def wave(phase):
+    fig,ax=plt.subplots(figsize=(9,3.6))
+    ax.plot(t,np.sin(t+phase),color='#3977a8',lw=3,label='Input')
+    ax.plot(t,-0.7*np.sin(t+phase),color='#c67e6a',lw=3,label='Output')
+    ax.set(xlim=(0,2*np.pi),ylim=(-1.2,1.2),xlabel='Time',ylabel='Normalized voltage')
+    ax.grid(alpha=.18); ax.legend(loc='upper right'); fig.tight_layout(); plt.show()
+wave(0)
+```
+
+## Matplotlib • phase advances {.magic-move}
+
+```{python}
+#| label: mpl-after
+wave(np.pi/2)
+```
+
+## A plot is still a plot
+
+Magic Move works with successive SVG figures. No new graphing API is required.
+
+Keep the axes, colors and plotting order stable so that the matcher can establish correspondence.
+
+## Seaborn • initial latency budget {.magic-move}
+
+```{python}
+#| label: sns-before
+import seaborn as sns
+sns.set_theme(style='whitegrid',context='talk')
+def latency(values):
+    fig,ax=plt.subplots(figsize=(8.5,3.6))
+    sns.barplot(x=['Fetch','Decode','Execute','Memory'],y=values,color='#3977a8',ax=ax)
+    ax.set(ylim=(0,6),ylabel='Latency (ns)',xlabel='');fig.tight_layout();plt.show()
+latency([2,2.5,5,3])
+```
+
+## Seaborn • optimized execute stage {.magic-move}
+
+```{python}
+#| label: sns-after
+latency([2,2.5,3,3])
+```
+
+## Algebra follows the picture
+
+::: magic-move
+
+$$I_D=\frac{k}{2}(V_{OV}+v_{gs})^2$$
+
+$$I_D=\frac{k}{2}V_{OV}^2+kV_{OV}v_{gs}+\frac{k}{2}v_{gs}^2$$
+
+$$\Delta I_D\approx g_m v_{gs}$$
+
+:::
+
+The approximation drops the second-order term only when the excitation is sufficiently small.
+
+## Code retains its identity
+
+::: magic-move
+
+```verilog
+assign y = a & b;
+```
+
+```verilog
+assign y = (a & b) | c;
+```
+
+```verilog
+always_comb begin
+    y = (a & b) | c;
+end
+```
+
+:::
+
+## Summary
+
+::: {.sa-card}
+**Let the presenter control the pace.** Motion explains change; static states support reading and discussion.
+:::
+
+[Usage guide](usage-guide.html)

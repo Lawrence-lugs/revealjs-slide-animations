@@ -1,0 +1,22 @@
+project:
+  type: default
+  output-dir: _site
+  render:
+    - examples.qmd
+    - usage-guide.qmd
+format:
+  revealjs:
+    theme: [white, slides.scss]
+    width: 1280
+    height: 720
+    margin: 0.06
+    center: false
+    transition: none
+    slide-number: false
+    revealjs-plugins: [slide-animations, magic-move]
+    fig-format: svg
+    embed-resources: false
+execute:
+  echo: false
+  warning: false
+  error: false
