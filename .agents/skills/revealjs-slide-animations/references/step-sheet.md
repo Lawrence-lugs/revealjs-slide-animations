@@ -24,3 +24,5 @@ Check that the final state retains the information learners need. Define what ba
 For each process or choice, add a trace such as `sample.md with an H1 → convert → sample.qmd with front matter`. Record where the viewer sees the same object before and after the operation. Include the referenced text at the same index. Record new demonstrations, staged reading, cues added to existing visuals, and restyled existing fragments separately in the final inventory. Navigation checks verify playback. Manually compare the delivered states to each planned trace.
 
 Complete a simple teaching pass across the inventory before refining individual motion. On delivery, reconcile every slide and live figure against the original inventory and explain any partial or blocked treatment.
+
+Before locking the inventory, sketch adjacent compositions as a sequence. Record the example object, arrangement of cards or panels, what the viewer sees enter or move, matched IDs carried to the next slide, text beneath or beside the focal visual, and the final callout. Review all classification, metaphor and quiz slides for visual treatments too.

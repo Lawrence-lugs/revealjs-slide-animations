@@ -66,3 +66,29 @@ test('converter demonstrates each edit with its explanation', async ({page}) => 
   await page.evaluate(() => Reveal.prevFragment());
   await expect(output).toHaveText('---\ntitle: Bias\n---\n[Notes](notes.md)');
 });
+
+test('publishing builds each stage with its own note', async ({page}) => {
+  await page.goto('/scene-direction.html#/publish-to-main');
+  await page.waitForFunction(() => Reveal.isReady());
+  const slide = page.locator('#publish-to-main');
+  const stages = slide.locator('svg g.fragment.visible');
+  const note = slide.locator('.lesson-notes .current-fragment');
+  for (const [i, expected] of ['checks', 'contributor', 'main', 'pipeline', 'location'].entries()) {
+    await page.evaluate(() => Reveal.nextFragment());
+    await expect(stages).toHaveCount(i + 1);
+    await expect(note).toContainText(expected);
+  }
+  await page.evaluate(() => Reveal.prevFragment());
+  await expect(stages).toHaveCount(4);
+  await expect(note).toContainText('pipeline');
+});
+
+test('folder moves into its destination across placement slides', async ({page}) => {
+  await page.goto('/scene-direction.html#/choose-the-placement');
+  const folder = page.locator('section.present .folder-chip');
+  const start = await folder.boundingBox();
+  await page.evaluate(() => Reveal.next());
+  await expect(page.locator('section.present.placed, section.present .placed')).toHaveCount(1);
+  await expect.poll(async () => (await folder.boundingBox()).x).toBeGreaterThan(start.x + 150);
+  await expect(page.locator('section.present .destination')).toContainText('devices/');
+});

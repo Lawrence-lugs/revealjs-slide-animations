@@ -1,0 +1,408 @@
+---
+title: "From submission to publication"
+subtitle: "A presenter-controlled editing walkthrough"
+css: scene-direction.css
+html-math-method: mathml
+---
+
+## Like a museum curator
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <div class="fragment sa-enter-up" data-fragment-index="0">
+      <article class="lesson-card">
+        <h3>Select</h3>
+        <p>Does this piece belong in the collection?</p>
+      </article>
+    </div>
+    <div class="fragment sa-enter-up" data-fragment-index="1">
+      <article class="lesson-card">
+        <h3>Arrange</h3>
+        <p>Where will a learner encounter it?</p>
+      </article>
+    </div>
+    <div class="fragment sa-enter-up" data-fragment-index="2">
+      <article class="lesson-card">
+        <h3>Label</h3>
+        <p>What title makes it discoverable?</p>
+      </article>
+    </div>
+  </div>
+  <div class="fragment sa-enter-up" data-fragment-index="3">
+    <aside class="lesson-aside">The supervisor owns the preview and publication.</aside>
+  </div>
+</div>
+```
+
+## What contributors hand you
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card">
+      <h3>bias-submission/</h3>
+      <div class="file-row fragment custom sa-focus-plain" data-fragment-index="0"><code>overview.md</code>
+        <small>Overview</small>
+      </div>
+      <div class="file-row fragment custom sa-focus-plain" data-fragment-index="1"><code>operating-point.md</code>
+        <small>Topic</small>
+      </div>
+      <div class="file-row fragment custom sa-focus-plain" data-fragment-index="2"><code>images/curve.svg</code>
+        <small>Figure</small>
+      </div>
+      <div class="file-row fragment custom sa-focus-plain" data-fragment-index="3"><code>worksheet.pdf</code>
+        <small>Attachment</small>
+      </div>
+    </article>
+    <article class="lesson-card">
+      <h3>What the site does</h3>
+      <div class="fragment sa-enter-up" data-fragment-index="0">
+        <p>The landing page introduces the module.</p>
+      </div>
+      <div class="fragment sa-enter-up" data-fragment-index="1">
+        <p>A topic becomes a page in reading order.</p>
+      </div>
+      <div class="fragment sa-enter-up" data-fragment-index="2">
+        <p>The page links to the figure at its path.</p>
+      </div>
+      <div class="fragment sa-enter-up" data-fragment-index="3">
+        <p>Readers can open the original document.</p>
+      </div>
+    </article>
+  </div>
+</div>
+```
+
+## Check the folder first {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card">
+      <h3>Archive</h3>
+      <pre><code>bias.zip</code>
+    </pre>
+  </article>
+  <div class="fragment sa-enter-up" data-fragment-index="0">
+    <article class="lesson-card">
+      <h3>Extract and inspect</h3>
+      <pre><code>python3 scripts/contribution_to_qmd.py bias/ --dry-run</code>
+    </pre>
+  </article>
+</div>
+<div class="fragment sa-enter-up" data-fragment-index="1">
+  <article class="lesson-card" data-id="folder">
+    <h3>Submission</h3>
+    <pre><code>bias/
+  overview.md
+  operating-point.md
+  images/curve.svg</code>
+  </pre>
+</article>
+</div>
+</div>
+<div class="fragment sa-enter-up" data-fragment-index="2">
+  <aside class="lesson-aside">Dry run: inspect the proposed changes and warnings before writing files.</aside>
+</div>
+</div>
+```
+
+## Check the content {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card" data-id="folder">
+      <h3>Submission</h3>
+      <pre><code>bias/
+  overview.md
+  operating-point.md
+  images/curve.svg</code>
+    </pre>
+  </article>
+  <article class="lesson-card">
+    <h3>Review the extracted pages</h3>
+    <div class="fragment sa-enter-up" data-fragment-index="0">
+      <p>Compare the claim with its source.</p>
+    </div>
+    <div class="fragment sa-enter-up" data-fragment-index="1">
+      <p>Read it as a newcomer to the topic.</p>
+    </div>
+    <div class="fragment sa-enter-up" data-fragment-index="2">
+      <p>Find unresolved #todo markers.</p>
+    </div>
+  </article>
+</div>
+</div>
+```
+
+## Migrate a document
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card">
+      <h3>Document editor</h3>
+      <div class="paper">
+        <strong>Bias point</strong>
+        <hr>
+        <p>The curve crosses the load line.</p>
+        <svg viewBox="0 0 140 46" width="140" aria-label="Example curve">
+          <path d="M3 42 Q62 40 135 4" fill="none" stroke="currentColor" stroke-width="3"/>
+        </svg>
+      </div>
+    </article>
+    <div class="fragment sa-enter-up" data-fragment-index="0">
+      <article class="lesson-card">
+        <h3>Markdown export</h3>
+        <pre><code># Bias point
+The curve crosses the load line.
+
+![Curve](data:image/png;base64,…)</code>
+      </pre>
+    </article>
+  </div>
+</div>
+<div class="fragment sa-enter-up" data-fragment-index="1">
+  <aside class="lesson-aside">Compare the export with the original, including embedded figures.</aside>
+</div>
+</div>
+```
+
+## Choose the placement {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="placement">
+    <strong>Incoming</strong><span data-id="moving-folder" class="folder-chip">▰ bias/</span>
+    <article class="lesson-card destination" data-id="materials">
+      <h3>materials/</h3>
+      <pre><code>devices/
+versioning/</code>
+    </pre>
+  </article>
+</div>
+</div>
+```
+
+## Place the topic {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="placement placed">
+    <strong>Filed</strong><span data-id="moving-folder" class="folder-chip">▰ bias/</span>
+    <article class="lesson-card destination" data-id="materials">
+      <h3>materials/</h3>
+      <pre><code>devices/
+  └─
+versioning/</code>
+    </pre>
+  </article>
+</div>
+<div class="fragment sa-enter-up" data-fragment-index="0">
+  <aside class="lesson-aside">Match the existing track and topic structure.</aside>
+</div>
+</div>
+```
+
+## Choose a conversion path
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <div class="fragment sa-enter-up" data-fragment-index="0">
+      <article class="lesson-card">
+        <h3>Convert</h3>
+        <pre><code>overview.md → overview.qmd</code>
+      </pre>
+      <p>Generate a page and review the report.</p>
+    </article>
+  </div>
+  <div class="fragment sa-enter-up" data-fragment-index="1">
+    <article class="lesson-card">
+      <h3>Keep Markdown</h3>
+      <pre><code>overview.md → overview.md</code>
+    </pre>
+    <p>Place a prose page directly when that is intentional.</p>
+  </article>
+</div>
+</div>
+</div>
+```
+
+## What the script does {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card">
+      <h3>Input</h3>
+      <pre><code># Bias
+[Next](next.md)</code>
+    </pre>
+  </article>
+  <div class="fragment sa-enter-up" data-fragment-index="0">
+    <article class="lesson-card">
+      <h3>Converted page</h3>
+      <pre><code>---
+title: Bias
+---
+[Next](next.qmd)</code>
+    </pre>
+  </article>
+</div>
+<div class="fragment sa-enter-up" data-fragment-index="1">
+  <article class="lesson-card" data-id="report">
+    <h3>Conversion report</h3>
+    <pre><code>overview.qmd
+⚠ unresolved link</code>
+  </pre>
+</article>
+</div>
+</div>
+</div>
+```
+
+## Read the warnings {auto-animate="true"}
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card" data-id="report">
+      <h3>Conversion report</h3>
+      <pre><code>overview.qmd
+⚠ unresolved link</code>
+    </pre>
+  </article>
+  <div class="fragment sa-enter-up" data-fragment-index="0">
+    <article class="lesson-card">
+      <h3>Warning</h3>
+      <p>Inspect the unresolved link. Conversion can continue.</p>
+    </article>
+  </div>
+  <div class="fragment sa-enter-up" data-fragment-index="1">
+    <article class="lesson-card">
+      <h3>Error</h3>
+      <p>The script stops. Resolve the failure before continuing.</p>
+    </article>
+  </div>
+</div>
+</div>
+```
+
+## Preview before you push
+
+```{=html}
+<div class="lesson-stage">
+  <svg class="lesson-flow" viewBox="0 0 820 108" role="img" aria-label="Preview before you push">
+    <g class="fragment fade-in" data-fragment-index="0">
+      <rect x="12" y="18" width="157" height="68" rx="8"/>
+      <text x="90" y="61" text-anchor="middle">Build</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="1">
+      <path class="fragment sa-draw" data-fragment-index="1" pathLength="1" d="M169 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="217" y="18" width="157" height="68" rx="8"/>
+      <text x="295" y="61" text-anchor="middle">Serve</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="2">
+      <path class="fragment sa-draw" data-fragment-index="2" pathLength="1" d="M374 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="422" y="18" width="157" height="68" rx="8"/>
+      <text x="500" y="61" text-anchor="middle">Inspect</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="3">
+      <path class="fragment sa-draw" data-fragment-index="3" pathLength="1" d="M579 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="627" y="18" width="157" height="68" rx="8"/>
+      <text x="705" y="61" text-anchor="middle">Test</text>
+    </g>
+    <circle class="lesson-traveler" cx="90" cy="18" r="7" aria-hidden="true"/>
+  </svg>
+  <div class="lesson-notes">
+    <p class="fragment current-visible" data-fragment-index="0">Run <code>make full-preview</code>.</p>
+    <p class="fragment current-visible" data-fragment-index="1">Open localhost:8000. Use PORT=9000 if the port is occupied.</p>
+    <p class="fragment current-visible" data-fragment-index="2">Check the layout, images, sidebar and links.</p>
+    <p class="fragment current-visible" data-fragment-index="3">Run <code>make test</code> before publishing.</p>
+  </div>
+</div>
+```
+
+## Publish to main
+
+```{=html}
+<div class="lesson-stage">
+  <svg class="lesson-flow" viewBox="0 0 1025 108" role="img" aria-label="Publish to main">
+    <g class="fragment fade-in" data-fragment-index="0">
+      <rect x="12" y="18" width="157" height="68" rx="8"/>
+      <text x="90" y="61" text-anchor="middle">Test</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="1">
+      <path class="fragment sa-draw" data-fragment-index="1" pathLength="1" d="M169 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="217" y="18" width="157" height="68" rx="8"/>
+      <text x="295" y="61" text-anchor="middle">Commit</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="2">
+      <path class="fragment sa-draw" data-fragment-index="2" pathLength="1" d="M374 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="422" y="18" width="157" height="68" rx="8"/>
+      <text x="500" y="61" text-anchor="middle">Push</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="3">
+      <path class="fragment sa-draw" data-fragment-index="3" pathLength="1" d="M579 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="627" y="18" width="157" height="68" rx="8"/>
+      <text x="705" y="61" text-anchor="middle">Pipeline</text>
+    </g>
+    <g class="fragment fade-in" data-fragment-index="4">
+      <path class="fragment sa-draw" data-fragment-index="4" pathLength="1" d="M784 52h46" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="832" y="18" width="157" height="68" rx="8"/>
+      <text x="910" y="61" text-anchor="middle">Live</text>
+    </g>
+    <circle class="lesson-traveler" cx="90" cy="18" r="7" aria-hidden="true"/>
+  </svg>
+  <div class="lesson-notes">
+    <p class="fragment current-visible" data-fragment-index="0">Confirm the local checks pass.</p>
+    <p class="fragment current-visible" data-fragment-index="1">Use a descriptive commit message and credit the contributor.</p>
+    <p class="fragment current-visible" data-fragment-index="2">Push the reviewed change to main.</p>
+    <p class="fragment current-visible" data-fragment-index="3">Watch the pipeline run.</p>
+    <p class="fragment current-visible" data-fragment-index="4">Confirm the published page and send its location to the contributor.</p>
+  </div>
+</div>
+```
+
+## Cross-check
+
+```{=html}
+<div class="lesson-stage">
+  <div class="lesson-grid">
+    <article class="lesson-card">
+      <h3>Question</h3>
+      <p>What do you inspect before converting the folder?</p>
+    </article>
+    <div class="fragment sa-enter-up" data-fragment-index="0">
+      <article class="lesson-card answer">
+        <h3>Answer</h3>
+        <p>The dry-run report, proposed placement and unresolved references.</p>
+      </article>
+    </div>
+  </div>
+</div>
+```
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const bind = () => {
+    for (const flow of document.querySelectorAll('.lesson-flow')) {
+      const token = flow.querySelector('.lesson-traveler');
+      const stops = Array.from(flow.querySelectorAll('g rect'), rect =>
+        Number(rect.getAttribute('x')) + Number(rect.getAttribute('width')) / 2);
+      SlideAnimations.bindState(flow, {
+        initial: {x: stops[0], opacity: 0},
+        steps: stops.map((x, index) => ({index, state: {x, opacity: 1}})),
+        duration: 550,
+        render: ({x, opacity}) => SlideAnimations.attrs(token, {cx: x, opacity})
+      });
+    }
+  };
+  if (Reveal.isReady()) bind();
+  else Reveal.on('ready', bind);
+});
+</script>

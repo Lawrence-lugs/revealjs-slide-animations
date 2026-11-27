@@ -1,0 +1,22 @@
+.lesson-stage {text-align:left; margin-top:1em; font-size:.85em}
+.lesson-grid {display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:1em; align-items:start}
+.lesson-card {padding:.8em; border:2px solid #92a4ac; border-top:6px solid #476d78; border-radius:.25em; background:#faf9f6; color:#172d32}
+.reveal .lesson-card h3 {font-size:1em; margin:0 0 .55em; color:#224955}
+.reveal .lesson-card pre {display:block; font-size:.75em; width:auto; margin:0; box-shadow:none; white-space:pre-wrap}
+.reveal .lesson-card pre code {white-space:pre-wrap; overflow-wrap:anywhere}
+.file-row {display:flex; justify-content:space-between; align-items:center; padding:.4em 0; border-bottom:1px solid #bbc6c6}
+.lesson-aside {margin-top:1em; padding:.5em 1em; border-left:5px solid #aa6a35; background:#f7efe3}
+.paper {background:white; border:1px solid #bbc6c6; padding:1em}
+.placement {position:relative; height:7.5em}
+.destination {position:absolute; left:45%; width:44%}
+.folder-chip {position:absolute; z-index:1; left:3%; top:2em; padding:.2em .6em; font-family:monospace; background:#f3deb8; border-radius:.2em}
+.placed .folder-chip {left:51%; top:3.25em}
+.lesson-flow {width:100%; display:block}
+.lesson-flow rect {fill:#edf4f2; stroke:#476d78; stroke-width:2}
+.lesson-flow text {fill:#172d32; font-size:21px}
+.lesson-notes {display:grid; border-top:2px solid #476d78; padding:.5em}
+.lesson-notes p {grid-area:1/1}
+.answer {border-top-color:#48865d}
+@media print {.lesson-notes p {grid-area:auto; opacity:1!important; visibility:visible!important}}
+.lesson-traveler {fill:#b15729; stroke:white; stroke-width:2}
+@media print {.lesson-traveler {display:none}}

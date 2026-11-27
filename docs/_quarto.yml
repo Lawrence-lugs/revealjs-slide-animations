@@ -4,6 +4,7 @@ project:
   render:
     - examples.qmd
     - usage-guide.qmd
+    - scene-direction.qmd
 format:
   revealjs:
     theme: [white, slides.scss]
