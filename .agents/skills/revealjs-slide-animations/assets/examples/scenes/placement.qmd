@@ -1,0 +1,24 @@
+## Place the submitted folder {#pick-folder .auto-animate}
+
+```{=html}
+<div class="sa-scene sa-grid">
+  <div class="sa-panel"><p class="sa-panel-title">Incoming</p>
+    <span class="sa-chip sa-literal" data-id="moving-folder">devices/</span>
+  </div>
+  <div class="sa-panel sa-dropzone" data-id="materials-box" data-sa-qa-fixed="materials-box">
+    <p class="sa-panel-title">materials/</p><div class="sa-tree"><div class="sa-row">fundamentals/</div></div>
+  </div>
+</div>
+```
+
+## Place the submitted folder {#drop-folder .auto-animate}
+
+```{=html}
+<div class="sa-scene sa-grid">
+  <div class="sa-panel"><p class="sa-panel-title">Incoming</p></div>
+  <div class="sa-panel sa-dropzone" data-id="materials-box" data-sa-qa-fixed="materials-box">
+    <p class="sa-panel-title">materials/</p><div class="sa-tree"><div class="sa-row">fundamentals/</div>
+    <div class="sa-row"><span class="sa-chip sa-literal" data-id="moving-folder">devices/</span></div></div>
+  </div>
+</div>
+```

@@ -90,3 +90,30 @@ Use one coordinate system for a baseline lane, an alternate lane, events and a d
 </svg>
 ```
 ````
+
+## Named scene beats
+
+Declare one sequence per slide. Mark the explanatory text and related fragments with `data-sa-beat="inspect"`. The plugin assigns the matching Reveal index and inserts a hidden trigger only if the group is otherwise empty.
+
+```html
+<script type="application/json" data-sa-beats>
+{"scope":"#conversion","beats":["inspect","convert","warn"]}
+</script>
+```
+
+Call `bindBeats(scope, {beats, start: 0})` to declare the same sequence in JavaScript. In `bindState` and `bindElements`, a step accepts `{beat: "convert", state: ...}` alongside the existing numeric index API. Declare beats before creating named bindings. For pre-existing fragments outside the declared sequence, assign explicit contiguous indices and set `start` to the next free index. Use `.sa-note-slot` and `.sa-current-note` for notes which replace each other. They appear in order in print.
+
+## Routes and tokens
+
+Use `bindPath(scope, {path: "#route", stops: {start: 0, check: "#check-marker", end: 1}})` to name stops on an SVG path. A numeric stop is a fraction of path length. A selector stop projects the center of an SVG marker onto the path. `route.progress("check")` returns the fraction and `route.point(fraction, svgGroup)` gives coordinates in the destination group. Split a route into path segments when it crosses itself or offers multiple plausible nearest points.
+
+Use `bindTokens(scope, {paths, tokens, initial, steps, duration})`, or `bindTimeline(scope, {beats, start, paths, tokens, initial, steps, duration})` to declare the beats and bind together. The same options work in `data-sa-tokens` and `data-sa-timeline` JSON scripts. See the [branching timeline](../assets/examples/scenes/timeline.qmd) for a complete example.
+
+- `paths` maps route names to `{path, stops}`. `tokens` maps token names to selectors for SVG groups or `{selector, print: true}` to retain a marker in print.
+- `initial` describes all tokens using `{path, stop, visible?, opacity?, fill?}`. A step's `tokens` map updates individual properties and carries other values forward. Place hidden branch tokens at a shared stop in the prior state, then move them down their own routes while hiding the parent.
+- A token follows its path between stops. When changing routes, identify the same physical junction on both routes and assign the junction on the change beat. Opacity interpolates along the same route. Fill changes at the settled beat.
+- Reduced motion settles immediately. Print applies the last state and shows path geometry. SVG authored with `.sa-draw` also prints with its complete stroke. Temporary markers are hidden. For custom `bindState` renderers, use `printFinal: true` to render the last declared state. Use `.sa-print-final` for additional print-only markup or deck CSS for custom properties derived from `.current-fragment`.
+
+## Mermaid flowcharts
+
+`bindMermaid(scope, {nodes, edges, labels, selectors, initial, steps})` and the `data-sa-mermaid` JSON form use the same `show`, `focus` and `flow` states as `bindElements`. Map semantic keys to authored node classes or Mermaid node IDs and to rendered/authored edge IDs. Use `{selector: "..."}` or the `selectors` map for output IDs or edge labels that require a renderer-specific selector. Each target must resolve to exactly one element. `data-sa-ready`, `data-sa-missing`, `data-sa-ambiguous`, and `data-sa-bind-details` report resolution after the diagram renders or is replaced.

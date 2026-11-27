@@ -1,0 +1,71 @@
+## Reverse-bias a junction {#reverse-junction}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" id="junction-model" viewBox="0 0 900 235" role="img" aria-label="At higher reverse bias the depletion region widens and the peak electric field increases">
+  <rect x="100" y="32" width="350" height="62" fill="#efd5c7"/>
+  <rect x="450" y="32" width="350" height="62" fill="#d5dfed"/>
+  <rect class="depletion" x="385" y="32" width="130" height="62" fill="#819597" opacity=".78"/>
+  <text x="120" y="72" font-size="23">p-type</text>
+  <text x="700" y="72" font-size="23">n-type</text>
+  <path class="sa-axis" d="M 100 211 H 800 M 100 211 V 125"/>
+  <text x="115" y="145" font-size="21">Field magnitude</text>
+  <path class="field" d="M 385 211 L 450 159 L 515 211" stroke="#334880" stroke-width="4" fill="none"/>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {data-sa-beat="bias"}
+Increase reverse bias. The depletion region widens and the peak field grows.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#reverse-junction","beats":["bias"]}</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  function bindJunction() {
+    SlideAnimations.bindState('#junction-model', {
+      initial: 65,
+      steps: [{beat: 'bias', state: 130}],
+      printFinal: true,
+      render: (width, svg) => {
+        SlideAnimations.attrs(svg.querySelector('.depletion'), {x:450-width, width:2*width});
+        SlideAnimations.attrs(svg.querySelector('.field'), {d:`M ${450-width} 211 L 450 ${211-.8*width} L ${450+width} 211`});
+      }
+    });
+  }
+  if (Reveal.isReady()) bindJunction();
+  else Reveal.on('ready', bindJunction);
+});
+</script>
+```
+
+## Read the force from the field {#field-force}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 900 225" role="img" aria-label="A negative charge experiences force opposite the electric field">
+  <path d="M 140 57 H 750 M 140 114 H 750 M 140 171 H 750 M 734 46 L 750 57 L 734 68 M 734 103 L 750 114 L 734 125 M 734 160 L 750 171 L 734 182"
+        fill="none" stroke="#526390" stroke-width="4"/>
+  <circle cx="450" cy="114" r="28" fill="#713e2b"/>
+  <text x="450" y="123" font-size="28" text-anchor="middle" style="fill:white">−</text>
+  <text x="142" y="39" font-size="22">Electric field</text>
+  <g data-sa-beat="force">
+    <path d="M 418 114 H 252 M 272 101 L 252 114 L 272 127" fill="none" stroke="#9c533a" stroke-width="6"/>
+    <text x="269" y="91" font-size="22">Force</text>
+  </g>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {data-sa-beat="force"}
+A negative charge feels a force opposite the electric field.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#field-force","beats":["force"]}</script>
+```

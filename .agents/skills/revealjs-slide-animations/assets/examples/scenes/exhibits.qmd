@@ -1,0 +1,50 @@
+## Curate an exhibit {#curate-exhibit}
+
+::: {.sa-scene}
+::: {.sa-grid}
+::: {.sa-panel .fragment .custom .sa-mark data-sa-beat="select"}
+**Choose the exhibit**
+
+Check a contributor's source before putting it on display.
+:::
+
+::: {.sa-panel .fragment .custom .sa-mark data-sa-beat="place"}
+**Place it where learners will find it**
+
+Give the page a home near its prerequisites.
+:::
+
+::: {.sa-panel .fragment .custom .sa-mark data-sa-beat="label"}
+**Label the exhibit**
+
+Use the page title to tell learners what it teaches.
+:::
+:::
+
+::: {.sa-warn data-sa-beat="takeaway"}
+A page can belong in the collection and still be hard to find.
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#curate-exhibit","beats":["select","place","label","takeaway"]}</script>
+```
+
+## Cross-check the intake {#intake-quiz}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**What changes during conversion?**
+
+`overview.md` · `figures/bias.svg` · `lecture.pdf`
+:::
+::: {.sa-panel data-sa-beat="answer"}
+**Check your answer**
+
+Convert `overview.md` to Quarto. Keep the figure and the PDF as files.
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#intake-quiz","beats":["answer"]}</script>
+```

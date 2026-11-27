@@ -1,0 +1,53 @@
+## Preview before you publish {#publish-flow}
+
+::: {.sa-scene}
+::: {#publish-diagram}
+```{mermaid}
+%%| fig-width: 9
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+  A["Run local preview"] --> B["Check rendered links"] -->|Verified| C["Publish to main"]
+  class A sa-preview
+  class B sa-check
+  class C sa-publish
+```
+:::
+
+::: {.sa-note-slot}
+::: {.sa-current-note data-sa-beat="check"}
+Open the preview and follow the links a learner will use.
+:::
+::: {.sa-current-note data-sa-beat="publish"}
+Push the verified change to `main`.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#publish-flow","beats":["check","publish"]}</script>
+<script type="application/json" data-sa-mermaid>
+{
+  "scope":"#publish-diagram",
+  "nodes":{"preview":"sa-preview","check":"sa-check","publish":"sa-publish"},
+  "edges":{"verify":{"selector":"path[id^='L_A_B_']"},"push":{"selector":"path[id^='L_B_C_']"}},
+  "labels":{"verified":"L_B_C_0"},
+  "initial":{"show":["preview"]},
+  "steps":[
+    {"beat":"check","state":{"show":["preview","check","verify"],"focus":["check","verify"]}},
+    {"beat":"publish","state":{"focus":["publish","push","verified"]}}
+  ]
+}
+</script>
+```
+
+```{=html}
+<style>
+  #publish-diagram foreignObject { overflow: visible; }
+  #publish-diagram .nodeLabel, #publish-diagram .nodeLabel p {
+    font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.3;
+    margin: 0;
+  }
+</style>
+```

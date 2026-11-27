@@ -1,0 +1,63 @@
+## Inspect a dry run {#inspect-dry-run}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**Incoming files**
+
+::: {.sa-tree}
+::: {.sa-row}
+`submission.zip`
+:::
+::: {.sa-row data-sa-beat="unpack"}
+`overview.md` · `images/`
+:::
+:::
+:::
+
+::: {.sa-terminal data-sa-beat="convert"}
+**Terminal**
+
+`python3` `convert.py` `submission` `--dry-run`
+
+::: {.sa-warn data-sa-beat="review"}
+Missing title in `notes.md`
+
+Would write `overview.qmd` and `notes.qmd`.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#inspect-dry-run","beats":["unpack","convert","review"]}</script>
+```
+
+## Read the edit and the preview {#preview-edit}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**Editor · `overview.qmd`**
+
+::: {.sa-row}
+`title: Bias circuits`
+:::
+::: {.sa-row .fragment .custom .sa-mark data-sa-beat="render"}
+`[Lab](lab.qmd)`
+:::
+:::
+
+::: {.sa-window}
+::: {.sa-address}
+`localhost:8000/overview.html`
+:::
+
+::: {.sa-note-slot}
+::: {data-sa-beat="render"}
+**Bias circuits** · A learner can now follow the **Lab** link from the preview.
+:::
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#preview-edit","beats":["render"]}</script>
+```

@@ -1,0 +1,87 @@
+## Sample a logic level {#sample-logic}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 900 255" role="img" aria-label="Data is high when the clock samples it">
+  <path d="M 120 92 H 330 V 40 H 720 V 92 H 805 M 120 202 H 495 V 150 H 805" class="sa-rail"/>
+  <text x="10" y="72" font-size="23">Data</text>
+  <text x="10" y="184" font-size="23">Clock</text>
+  <g data-sa-beat="sample">
+    <path d="M 495 25 V 218" stroke="#914c37" stroke-width="3" stroke-dasharray="7 5"/>
+    <circle cx="495" cy="40" r="10" fill="#914c37"/>
+    <text x="520" y="139" font-size="23">Rising edge</text>
+  </g>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {data-sa-beat="sample"}
+The flip-flop captures a **1** at the rising clock edge.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#sample-logic","beats":["sample"]}</script>
+```
+
+## Establish a current path {#switch-current}
+
+::: {.sa-scene .sa-grid}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 420 300" role="img" aria-label="A resistor feeds an NMOS drain, and the source is grounded">
+  <g class="sa-rail">
+    <path d="M 215 30 V 52 L 204 63 L 226 74 L 204 85 L 226 96 L 215 107 V 142 H 190 V 162
+             M 190 162 V 213 H 215 V 242 M 195 242 H 235 M 202 250 H 228 M 210 258 H 220
+             M 164 162 V 213 M 90 188 H 164 M 198 30 H 232"/>
+    <path d="M 215 142 H 280"/>
+  </g>
+  <g font-size="21"><text x="249" y="38">VDD</text><text x="288" y="150">Drain</text><text x="28" y="193">Gate</text></g>
+  <g data-sa-beat="conduct">
+    <path d="M 249 55 V 128 M 241 116 L 249 128 L 257 116" stroke="#914c37" stroke-width="3" fill="none"/>
+    <text x="266" y="105" font-size="21">I<tspan baseline-shift="sub">D</tspan></text>
+  </g>
+</svg>
+```
+
+::: {.sa-panel}
+**NMOS low-side switch**
+
+Gate held low.
+
+::: {.sa-warn data-sa-beat="conduct"}
+Raise the gate voltage. Drain current now flows through the load to ground.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#switch-current","beats":["conduct"]}</script>
+```
+
+## Trace a via between metal layers {#trace-via}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 900 210" role="img" aria-label="A via connects two overlapping metal layers">
+  <rect x="110" y="131" width="500" height="30" rx="4" fill="#36716b"/>
+  <rect x="370" y="49" width="380" height="30" rx="4" fill="#536eb1"/>
+  <text x="625" y="154" font-size="23">Metal 1</text>
+  <text x="765" y="72" font-size="23">Metal 2</text>
+  <g data-sa-beat="connect">
+    <rect x="445" y="79" width="42" height="52" fill="#ac613e"/>
+    <text x="507" y="111" font-size="23">Via</text>
+  </g>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {data-sa-beat="connect"}
+A via connects the layers at the overlap. Away from the via, dielectric separates them.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#trace-via","beats":["connect"]}</script>
+```

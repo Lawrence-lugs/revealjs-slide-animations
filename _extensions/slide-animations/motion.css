@@ -81,3 +81,64 @@
  .reveal .sa-element.sa-element-dim {opacity:1!important;transition:none!important;pointer-events:auto;}
  .reveal .sa-element-flow {animation:none!important;}
 }
+
+/* Opt-in scene components. Shared theme styles stay outside these selectors. */
+:where(.reveal) .sa-scene {
+  --sa-scene-border: color-mix(in srgb, currentColor 22%, transparent);
+  --sa-scene-surface: color-mix(in srgb, currentColor 4%, transparent);
+  --sa-scene-active: color-mix(in srgb, var(--sa-accent) 24%, transparent);
+  font-size: .72em;
+  line-height: 1.35;
+  text-align: left;
+}
+:where(.reveal .sa-grid) {
+  display:grid;grid-template-columns:var(--sa-grid-template,repeat(var(--sa-columns,2),minmax(0,1fr)));
+  gap:var(--sa-grid-gap,.7em);align-items:start;
+}
+:where(.reveal :is(.sa-panel,.sa-terminal,.sa-window,.sa-thread)) {
+  box-sizing:border-box;min-width:0;padding:.7em .9em;
+  border:1px solid var(--sa-scene-border);border-radius:.45em;background:var(--sa-scene-surface);
+}
+:where(.reveal) :is(.sa-panel,.sa-terminal,.sa-window,.sa-thread) > :first-child {margin-top:0;}
+:where(.reveal) :is(.sa-panel,.sa-terminal,.sa-window,.sa-thread) > :last-child {margin-bottom:0;}
+:where(.reveal .sa-scene) .sa-panel-title {font-weight:700;margin:0 0 .4em;}
+:where(.reveal .sa-scene) .sa-tree {display:grid;gap:.18em;margin:0;padding:0;list-style:none;}
+:where(.reveal .sa-scene) .sa-row {display:flex;align-items:baseline;gap:.5em;padding:.18em .4em;border-bottom:1px solid var(--sa-scene-border);}
+:where(.reveal .sa-scene) .sa-chip {display:inline-block;padding:.12em .4em;border:1px solid var(--sa-scene-border);border-radius:.25em;}
+:where(.reveal) .sa-dropzone {box-sizing:border-box;block-size:var(--sa-dropzone-size,8em);}
+:where(.reveal .sa-scene) :is(.sa-address,.sa-menu,.sa-message,.sa-register) {
+  display:block;padding:.32em .55em;border:1px solid var(--sa-scene-border);border-radius:.3em;
+}
+:where(.reveal .sa-scene) .sa-menu {justify-self:start;background:var(--sa-scene-surface);}
+:where(.reveal) .sa-thread {display:grid;gap:.4em;}
+:where(.reveal .sa-scene) .sa-message {justify-self:start;}
+:where(.reveal .sa-scene) .sa-message[data-side="reply"] {justify-self:end;background:var(--sa-scene-active);}
+:where(.reveal .sa-scene) .sa-warn {border-inline-start:.2em solid var(--sa-accent);padding-inline-start:.55em;}
+:where(.reveal .sa-scene) :is(.sa-terminal,.sa-tree,.sa-address,.sa-register,.sa-literal) {font-family:var(--r-code-font,monospace);}
+.reveal .sa-scene :is(.sa-literal,[data-sa-qa-token]) {text-transform:none;letter-spacing:normal;}
+:where(.reveal .sa-scene) .sa-register {display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:.25em;text-align:center;}
+:where(.reveal .sa-scene) .sa-register > * {border:1px solid var(--sa-scene-border);padding:.12em .4em;}
+:where(.reveal) .sa-note-slot {display:grid;min-block-size:var(--sa-note-size,2.8em);align-items:start;}
+:where(.reveal) .sa-note-slot > * {grid-area:1 / 1;margin:0;}
+:where(.reveal .sa-scene) .sa-rail {stroke:currentColor;stroke-width:2;fill:none;}
+:where(.reveal .sa-scene) .sa-axis {stroke:currentColor;stroke-width:1.5;fill:none;}
+.reveal .fragment.custom.sa-mark {opacity:1;visibility:visible;}
+.reveal :is(.fragment.custom.sa-mark.current-fragment,.sa-mark[aria-current="step"]) {
+  color:inherit;font-weight:700;text-decoration:underline .16em;text-underline-offset:.23em;
+  text-decoration-color:var(--sa-mark-color,currentColor);
+  background:color-mix(in srgb, var(--sa-accent) 22%, transparent);
+}
+.reveal .sa-current-note.fragment.visible:not(.current-fragment) {visibility:hidden;opacity:0;}
+.reveal [data-sa-token][aria-hidden="true"] {pointer-events:none;}
+@media print {
+  .reveal [data-sa-token="transient"] {display:none!important;}
+  .reveal .sa-note-slot {display:block;}
+  .reveal .sa-current-note.fragment {visibility:visible!important;opacity:1!important;}
+}
+html.print-pdf .reveal [data-sa-token="transient"] {display:none!important;}
+html.print-pdf .reveal .sa-note-slot {display:block;}
+html.print-pdf .reveal .sa-current-note.fragment {visibility:visible!important;opacity:1!important;}
+.reveal .sa-terminal :not(pre) > code {white-space:nowrap;}
+.reveal .sa-print-final {display:none;}
+@media print {.reveal .sa-print-final {display:revert;}}
+html.print-pdf .reveal .sa-print-final {display:revert;}

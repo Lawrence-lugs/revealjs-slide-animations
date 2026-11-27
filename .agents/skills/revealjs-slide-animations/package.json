@@ -1,6 +1,6 @@
 {
   "name": "revealjs-slide-animations-authoring",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": { "qa:deck": "node scripts/qa-deck.cjs" },
   "devDependencies": { "@playwright/test": "1.51.1" }

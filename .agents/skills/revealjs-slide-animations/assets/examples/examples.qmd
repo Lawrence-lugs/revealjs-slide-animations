@@ -2,6 +2,7 @@
 title: "Motion with meaning"
 subtitle: "Reveal.js animation examples • advance with the arrow keys"
 jupyter: python3
+html-math-method: mathml
 ---
 
 ## From a title to an explanation {auto-animate="true"}
@@ -57,19 +58,19 @@ For a p-type substrate; voltages relative to flat band (idealized).
 ::: {.sa-cards}
 
 ::: {.sa-card .fragment .custom .sa-focus}
-**01　Accumulation**　 <small>\(V_G < V_{FB}\)</small>
+**01　Accumulation**　 <small>$V_G < V_{FB}$</small>
 
 <small>The gate attracts majority carriers. Holes crowd the surface.</small>
 :::
 
 ::: {.sa-card .fragment .custom .sa-focus}
-**02　Depletion**　 <small>\(V_{FB}<V_G<V_{TH}\)</small>
+**02　Depletion**　 <small>$V_{FB}<V_G<V_{TH}$</small>
 
 <small>Holes are repelled. Ionized acceptors remain in the depletion region.</small>
 :::
 
 ::: {.sa-card .fragment .custom .sa-focus}
-**03　Inversion**　 <small>\(V_G>V_{TH}\)</small>
+**03　Inversion**　 <small>$V_G>V_{TH}$</small>
 
 <small>Electrons accumulate at the surface, forming an n-type channel.</small>
 :::
@@ -178,7 +179,7 @@ A nonlinear transfer characteristic is locally linear near its bias point.
 <span class="fragment sa-trigger" data-fragment-index="2"></span>
 <span class="fragment sa-trigger" data-fragment-index="3"></span>
 
-<small>Click to excite the device, reduce the amplitude, then sweep through positive and negative phases. \(I_D=kV_{OV}^2/2\), \(g_m=kV_{OV}\); normalized \(k=2,\ V_{OV,Q}=1\).</small>
+<small>Click to excite the device, reduce the amplitude, then sweep through positive and negative phases. $I_D=kV_{OV}^2/2$, $g_m=kV_{OV}$; normalized $k=2,\ V_{OV,Q}=1$.</small>
 
 <script>
 (function(){

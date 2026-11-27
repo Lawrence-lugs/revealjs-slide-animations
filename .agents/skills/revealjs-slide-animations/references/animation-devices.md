@@ -21,3 +21,5 @@
 Keep a stable coordinate system and derive geometry, labels and status from the same parameter. For example a small-signal sweep derives nonlinear current, tangent approximation and error from one amplitude. For timing, move the data edge and compute whether it violates setup/hold rather than independently timing a warning.
 
 For existing Mermaid flowcharts, use bindElements to reveal or focus semantic nodes and edges within a fixed layout. For waveform phase, amplitude, or bias, use bindState and recompute from the mathematical parameter; do not morph sampled endpoints. See mermaid-and-plots.md.
+
+[Quarto Magic Move](https://github.com/emilhvitfeldt/quarto-revealjs-magic-move) is an optional extension. Choose it during storyboarding when matching geometry, code or equation terms across slides is central to the explanation. Use native Auto-Animate for shared elements or a numeric driver for a change produced by one parameter.

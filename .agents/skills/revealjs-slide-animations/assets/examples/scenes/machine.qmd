@@ -1,0 +1,143 @@
+## Load one byte {#machine-load}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**Byte-addressed memory**
+
+::: {.sa-tree}
+::: {.sa-row}
+`0x20` · `3C`
+:::
+::: {.sa-row .fragment .custom .sa-mark data-sa-beat="address"}
+`0x21` · `A5`
+:::
+::: {.sa-row}
+`0x22` · `00`
+:::
+:::
+
+::: {.sa-note-slot}
+::: {.sa-current-note data-sa-beat="address"}
+Drive address `0x21` on the bus.
+:::
+::: {.sa-current-note data-sa-beat="capture"}
+Capture the response in the low byte of the register.
+:::
+:::
+:::
+
+::: {.sa-panel}
+**Register · R0**
+
+::: {.sa-register data-sa-beat="capture"}
+<span>7 · 1</span><span>6 · 0</span><span>5 · 1</span><span>4 · 0</span><span>3 · 0</span><span>2 · 1</span><span>1 · 0</span><span>0 · 1</span>
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#machine-load","beats":["address","capture"]}</script>
+```
+
+## Forward a pipeline result {#forward-result}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**Execute**
+
+`ADD R2, R0, R1`
+
+::: {.sa-row data-sa-beat="produce"}
+`R2 = 0x000A`
+:::
+:::
+
+::: {.sa-panel}
+**Next instruction**
+
+`XOR R3, R2, R4`
+
+::: {.sa-row data-sa-beat="forward"}
+`R2 ← 0x000A`
+:::
+:::
+:::
+
+::: {.sa-scene .sa-note-slot}
+::: {.sa-current-note data-sa-beat="produce"}
+The ALU produces the sum before register writeback.
+:::
+::: {.sa-current-note data-sa-beat="forward"}
+Forward the sum to the dependent instruction.
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#forward-result","beats":["produce","forward"]}</script>
+```
+
+## Save a return address {#save-return}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-panel}
+**Call site**
+
+`0x108: CALL process`
+
+::: {.sa-row data-sa-beat="push"}
+Return to `0x10C` after the call.
+:::
+:::
+
+::: {.sa-panel .sa-dropzone data-sa-qa-fixed="stack"}
+**Stack**
+
+::: {.sa-tree}
+::: {.sa-row data-sa-beat="push"}
+`SP = 0x7FFC` · `0x10C`
+:::
+::: {.sa-row}
+`0x8000` · previous frame
+:::
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#save-return","beats":["push"]}</script>
+```
+
+## Retire the head of a queue {#retire-queue}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 900 190" role="img" aria-label="Queue entry A travels from the head slot to the consumer">
+  <path id="queue-route" d="M 160 77 H 780" class="sa-rail"/>
+  <g fill="#f0f2f4" stroke="#676a70">
+    <rect x="100" y="40" width="120" height="74" rx="8"/>
+    <rect x="230" y="40" width="120" height="74" rx="8"/>
+    <rect x="720" y="40" width="120" height="74" rx="8"/>
+  </g>
+  <g font-size="22" text-anchor="middle"><text x="290" y="84">B</text><text x="160" y="149">Head</text><text x="780" y="149">Consumer</text></g>
+  <g id="queue-entry"><rect x="-22" y="-22" width="44" height="44" rx="8" fill="#713e2b"/><text x="0" y="8" style="fill:white" font-size="23" text-anchor="middle">A</text></g>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {data-sa-beat="take"}
+The consumer takes **A**. **B** stays queued.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-timeline>
+{
+  "scope":"#retire-queue","beats":["take"],
+  "paths":{"queue":{"path":"#queue-route","stops":{"head":0,"consumer":1}}},
+  "tokens":{"entry":{"selector":"#queue-entry","print":true}},
+  "initial":{"entry":{"path":"queue","stop":"head"}},
+  "steps":[{"beat":"take","tokens":{"entry":{"path":"queue","stop":"consumer"}}}]
+}
+</script>
+```

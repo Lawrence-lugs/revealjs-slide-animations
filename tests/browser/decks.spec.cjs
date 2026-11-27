@@ -12,6 +12,7 @@ for(const deck of ['examples','usage-guide'])test(deck+' navigates',async({page}
 test('focus cards and bias state restore',async({page})=>{
  await page.goto('/examples.html');await page.waitForFunction(()=>window.Reveal?.isReady());
  await page.evaluate(()=>{let s=document.querySelector('#mos-regimes');let i=Reveal.getIndices(s);Reveal.slide(i.h,i.v,0);});
+ await expect(page.locator('#mos-regimes .sa-card math')).toHaveCount(3);
  await expect(page.locator('#mos-regimes .sa-focus.current-fragment')).toHaveCount(1);
  await page.evaluate(()=>Reveal.nextFragment());await expect(page.locator('#mos-regimes .sa-focus.current-fragment')).toContainText('Depletion');
  await page.evaluate(()=>Reveal.prevFragment());await expect(page.locator('#mos-regimes .sa-focus.current-fragment')).toContainText('Accumulation');

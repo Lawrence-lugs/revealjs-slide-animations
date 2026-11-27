@@ -1,0 +1,55 @@
+## Export an existing document {#export-document}
+
+::: {.sa-scene .sa-grid}
+::: {.sa-window}
+::: {.sa-panel-title}
+Bias guide
+:::
+
+::: {.sa-row .fragment .custom .sa-mark data-sa-beat="menu"}
+File › Download
+:::
+
+::: {.sa-menu data-sa-beat="menu"}
+Markdown (.md)
+:::
+
+**Measure the bias point.** See the annotated circuit.
+:::
+
+::: {.sa-terminal data-sa-beat="export"}
+`bias-guide.md`
+
+`# Bias guide`
+
+Measure the bias point. See the annotated circuit.
+
+::: {.sa-warn}
+Compare the exported text and figure against the original.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#export-document","beats":["menu","export"]}</script>
+```
+
+## Close the loop {#publish-reply}
+
+::: {.sa-scene .sa-thread}
+::: {.sa-message}
+**Contributor** · Has the guide gone live?
+:::
+
+::: {.sa-message data-side="reply" data-sa-beat="reply"}
+**Supervisor** · The preview link works. The published page is now in the Devices module.
+:::
+
+::: {.sa-warn data-sa-beat="reply"}
+Send the live link after deployment finishes.
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-beats>{"scope":"#publish-reply","beats":["reply"]}</script>
+```

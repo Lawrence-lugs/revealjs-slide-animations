@@ -11,3 +11,6 @@ __pycache__/
 /docs/usage-guide.qmd
 /docs/scene-direction.qmd
 /docs/scene-direction.css
+
+/docs/scene-gallery.qmd
+/docs/scenes/

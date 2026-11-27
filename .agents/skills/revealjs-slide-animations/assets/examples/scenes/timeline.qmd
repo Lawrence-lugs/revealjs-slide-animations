@@ -1,0 +1,68 @@
+## Publish and notify {#branch-timeline}
+
+::: {.sa-scene}
+```{=html}
+<svg class="sa-svg" viewBox="0 0 900 225" role="img" aria-label="A checked submission branches into a release and a contributor notification">
+  <path id="intake-route" class="sa-rail" d="M 95 115 H 415"/>
+  <path id="live-route" class="sa-rail" d="M 415 115 Q 480 115 510 65 T 800 55"/>
+  <path id="reply-route" class="sa-rail" d="M 415 115 Q 480 115 510 160 T 800 175"/>
+  <g fill="currentColor">
+    <circle cx="95" cy="115" r="5"/>
+    <circle id="review-marker" cx="255" cy="115" r="5"/>
+    <circle cx="415" cy="115" r="5"/>
+    <circle cx="800" cy="55" r="5"/>
+    <circle cx="800" cy="175" r="5"/>
+  </g>
+  <g font-size="23" text-anchor="middle">
+    <text x="95" y="90">Submission</text>
+    <text x="255" y="90">Preview</text>
+    <text x="415" y="90">Review</text>
+    <text x="800" y="32">Live site</text>
+    <text x="800" y="213">Contributor</text>
+  </g>
+  <g id="submission-token"><circle r="11"/></g>
+  <g id="release-token"><rect x="-9" y="-9" width="18" height="18" rx="2"/></g>
+  <g id="reply-token"><circle r="10"/></g>
+</svg>
+```
+
+::: {.sa-note-slot}
+::: {.sa-current-note data-sa-beat="preview"}
+Inspect the local preview.
+:::
+::: {.sa-current-note data-sa-beat="approve"}
+Review the result before publishing.
+:::
+::: {.sa-current-note data-sa-beat="deliver"}
+Publish the site and send the live link to the contributor.
+:::
+:::
+:::
+
+```{=html}
+<script type="application/json" data-sa-timeline>
+{
+  "scope":"#branch-timeline","beats":["preview","approve","deliver"],
+  "paths":{
+    "intake":{"path":"#intake-route","stops":{"start":0,"preview":"#review-marker","gate":1}},
+    "release":{"path":"#live-route","stops":{"gate":0,"end":1}},
+    "reply":{"path":"#reply-route","stops":{"gate":0,"end":1}}
+  },
+  "tokens":{"submission":"#submission-token","live":{"selector":"#release-token","print":true},"reply":"#reply-token"},
+  "initial":{
+    "submission":{"path":"intake","stop":"start","fill":"#80462f"},
+    "live":{"path":"release","stop":"gate","visible":false},
+    "reply":{"path":"reply","stop":"gate","visible":false}
+  },
+  "steps":[
+    {"beat":"preview","tokens":{"submission":{"stop":"preview"}}},
+    {"beat":"approve","tokens":{"submission":{"stop":"gate"}}},
+    {"beat":"deliver","tokens":{
+      "submission":{"visible":false},
+      "live":{"stop":"end","visible":true,"fill":"#256154"},
+      "reply":{"stop":"end","visible":true,"fill":"#394a89"}
+    }}
+  ]
+}
+</script>
+```

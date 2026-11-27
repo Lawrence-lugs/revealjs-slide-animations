@@ -1,0 +1,25 @@
+---
+title: "Scene gallery"
+format:
+  revealjs:
+    revealjs-plugins: [slide-animations]
+    html-math-method: plain
+---
+
+{{< include scenes/exhibits.qmd >}}
+
+{{< include scenes/workspace.qmd >}}
+
+{{< include scenes/placement.qmd >}}
+
+{{< include scenes/document.qmd >}}
+
+{{< include scenes/publish.qmd >}}
+
+{{< include scenes/timeline.qmd >}}
+
+{{< include scenes/machine.qmd >}}
+
+{{< include scenes/circuits.qmd >}}
+
+{{< include scenes/physics.qmd >}}

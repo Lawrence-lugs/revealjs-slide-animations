@@ -32,3 +32,9 @@ Magic Move remains optional for code, math and compatible static SVG states; qua
 - All intended targets actually change, and unrelated geometry remains still.
 - No flicker, duplicate arrows, label drift, or paths that warp into mathematically invalid shapes.
 - No new graphing/diagram library or slide timeline.
+
+## Distinguish bindings, labels and node geometry
+
+Start with [the flowchart adapter recipe](../assets/examples/scenes/publish.qmd). Prefer authored node classes. Inspect path and label IDs for the actual renderer before mapping an edge. The targeted QA report distinguishes unresolved or ambiguous bindings from clipping at a `foreignObject`, text that extends outside a node shape, and SVG viewport clipping. Geometry runs after fonts are ready.
+
+With Quarto 1.9.38, deck-level nested `themeVariables` and `flowchart.htmlLabels` were observed to have no effect in the affected deck. Inspect whether its labels are SVG `text` or HTML in a `foreignObject` and use the computed font when diagnosing. A scoped `foreignObject { overflow: visible }` adjustment can restore the last glyph when the label otherwise fits its node. The legacy `.sa-mermaid` utility also overrides max width. When the lecture theme supplies figure scaling, use only a diagram-scoped label rule or explicitly set the existing intended figure width. If the box itself clips, repair the viewBox or layout and recheck. Redraw an unreliable figure when the geometry still fails or the required teaching action needs a different composition.

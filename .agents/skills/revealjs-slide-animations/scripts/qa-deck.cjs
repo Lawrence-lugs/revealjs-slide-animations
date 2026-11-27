@@ -5,10 +5,17 @@ const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {parseArgs} = require('node:util');
 const {chromium} = require('@playwright/test');
+const inspectGeometry = require('./geometry.cjs');
+const changedSlides = require('./changed-slides.cjs');
 
 const usage = `Usage: npm run qa:deck -- <deck.html|URL> [options]
   --out DIR           Screenshots and JSON report (default test-results/deck-qa)
   --full              Run navigation, second viewport, reduced-motion and print checks
+  --slide ID|H-V      Repeat to select slide IDs or Reveal coordinates
+  --steps LIST        Comma-separated fragment indices, including initial
+  --changed-only REF  Compare QMD against this Git ref (requires --source)
+  --source FILE       QMD associated with the rendered deck
+  --no-print          Skip the full run’s print pass
   --viewport WxH      Repeat to override the viewport (default 1280x720, plus 1024x768 in full mode)
   --settle-ms N       Wait after navigation (default two frames, or 1000 ms with --full)
   --timeout-ms N      Readiness timeout for deck and bindings (default 15000)
@@ -31,6 +38,11 @@ function readOptions() {
     options: {
       help: {type: 'boolean'}, out: {type: 'string', default: 'test-results/deck-qa'},
       full: {type: 'boolean'},
+      slide: {type: 'string', multiple: true},
+      steps: {type: 'string'},
+      'changed-only': {type: 'string'},
+      source: {type: 'string'},
+      'no-print': {type: 'boolean'},
       viewport: {type: 'string', multiple: true},
       'settle-ms': {type: 'string'},
       'timeout-ms': {type: 'string', default: '15000'},
@@ -54,6 +66,13 @@ function readOptions() {
   });
   return {
     url, viewports, full, out: path.resolve(values.out),
+    selectors: values.slide,
+    steps: values.steps?.split(',').map(step => {
+      step = step.trim();
+      return step === 'initial' ? -1 : integer(step, '--steps index', 0);
+    }),
+    changed: values['changed-only'] === undefined ? null : changedSlides(values['changed-only'], values.source),
+    print: full && !values['no-print'],
     settle: integer(values['settle-ms'] ?? (full ? '1000' : '0'), '--settle-ms', 0),
     timeout: integer(values['timeout-ms'], '--timeout-ms', 1),
     expectedCount: values['expect-count'] === undefined ? undefined :
@@ -81,19 +100,34 @@ async function loadDeck(page, url, options, fail) {
   assert(await page.evaluate(() => window.SlideAnimations &&
     Reveal.getPlugin('slide-animations')), 'SlideAnimations is missing or unregistered');
   await page.evaluate(() => document.fonts.ready);
-  try {
-    await page.waitForFunction(() =>
-      [...document.querySelectorAll('[data-sa-ready], script[data-sa-elements]')].every(el =>
-        el.tagName === 'SCRIPT' ? el.dataset.saBound === 'true' : el.dataset.saReady === 'true'
-      ), null, {timeout: options.timeout});
-  } catch (error) {
-    if (error.name !== 'TimeoutError') throw error;
+  const slides = await page.evaluate(listSlides);
+  const coordinates = url.searchParams.has('print-pdf') ? null :
+    selectSlides(slides, options).map(({h, v}) => [h, v]);
+  function unresolved(selection) {
+    const sections = selection?.map(([h, v]) => Reveal.getSlide(h, v));
+    return [...document.querySelectorAll('[data-sa-ready="false"], script[data-sa-bound="false"]')]
+      .filter(el => {
+        if (!sections) return true;
+        let scope = el;
+        if (el.localName === 'script') {
+          try {
+            scope = document.querySelector(JSON.parse(el.textContent).scope) ?? el;
+          } catch { /* Retain the script's own scope for malformed config. */ }
+        }
+        return sections.some(section => section?.contains(scope));
+      }).map(el => el.localName === 'script' ? el.textContent.trim()
+        : `${el.id || el.localName}: ${el.dataset.saBindDetails || el.dataset.saMissing}`);
   }
-  const broken = await page.evaluate(() =>
-    [...document.querySelectorAll('[data-sa-ready="false"], script[data-sa-elements]:not([data-sa-bound="true"])')].map(el =>
-      el.tagName === 'SCRIPT' ? el.textContent.trim() : `${el.id || el.tagName}: ${el.dataset.saMissing}`
-    )
-  );
+  // Pending diagrams may emit an SVG later. Broken config scripts already
+  // produced a console diagnostic and cannot recover, so avoid waiting on them.
+  await page.waitForFunction(selection => {
+    const sections = selection?.map(([h, v]) => Reveal.getSlide(h, v)) ?? [document];
+    return sections.every(section => section &&
+      !section.matches?.('[data-sa-ready="false"]') && !section.querySelector('[data-sa-ready="false"]'));
+  }, coordinates, {timeout: options.timeout}).catch(error => {
+    if (error.name !== 'TimeoutError') throw error;
+  });
+  const broken = await page.evaluate(unresolved, coordinates);
   for (const target of broken) fail(`Unresolved animation binding: ${target}`);
 }
 
@@ -105,6 +139,22 @@ function listSlides() {
     return {h, v, id: slide.id, title: slide.querySelector('h1, h2, h3')?.textContent.trim(),
       steps: [-1, ...fragments]};
   });
+}
+
+function selectSlides(slides, options) {
+  const bySelector = selector => slides.find(slide => slide.id === selector.replace(/^#/, '')) ??
+    slides.find(slide => `${slide.h}-${slide.v}` === selector);
+  const explicit = options.selectors?.map(selector => {
+    const slide = bySelector(selector);
+    if (!slide) throw new Error(`Unknown slide ${selector}`);
+    return slide;
+  });
+  let changed = options.changed?.map(id => bySelector('#' + id));
+  if (changed?.some(slide => !slide)) {
+    console.warn('The rendered deck lacks a changed QMD ID. Scanning the requested deck scope.');
+    changed = null;
+  }
+  return [...new Set((explicit ?? slides).filter(slide => !changed || changed.includes(slide)))];
 }
 
 function readState() {
@@ -138,29 +188,43 @@ function readState() {
   };
 }
 
-function findOverflow() {
+function auditFragments() {
   const slide = Reveal.getCurrentSlide();
-  const frame = document.querySelector('.reveal').getBoundingClientRect();
-  const width = Math.min(frame.right, innerWidth);
-  const height = Math.min(frame.bottom, innerHeight);
-  const overflow = [];
-  for (const el of slide.querySelectorAll('*')) {
-    if ((el instanceof SVGElement && el.tagName !== 'svg') ||
-        el.closest('.speaker-notes, aside.notes, .sa-trigger, [data-sa-qa-ignore-overflow]')) continue;
-    const style = getComputedStyle(el);
-    if (style.display === 'none' || style.visibility !== 'visible' || Number(style.opacity) === 0) continue;
-    if (el.checkVisibility && !el.checkVisibility({checkOpacity: true, checkVisibilityCSS: true})) continue;
-    const rect = el.getBoundingClientRect();
-    if (!rect.width || !rect.height) continue;
-    // Ignore descendants clipped by a scroll container. Check the container itself.
-    const clipped = el.parentElement?.closest('pre');
-    if (clipped && clipped !== el) continue;
-    const exceeds = Math.max(frame.left - rect.left, frame.top - rect.top,
-      rect.right - width, rect.bottom - height);
-    if (exceeds > 3) overflow.push({element: el.id || el.tagName, pixels: Math.round(exceeds)});
-    if (overflow.length === 12) break;
+  const beats = JSON.parse(slide.dataset.saBeats || '{}');
+  const fragments = [...slide.querySelectorAll('.fragment[data-fragment-index]')];
+  const indices = new Set(fragments.map(el => Number(el.dataset.fragmentIndex)));
+  const bindings = [...slide.querySelectorAll('[data-sa-steps]')];
+  if (slide.hasAttribute('data-sa-steps')) bindings.push(slide);
+  const driven = new Set(bindings.flatMap(el => (el.dataset.saSteps || '').split(',').filter(Boolean).map(Number)));
+  const findings = [];
+  for (const [beat, index] of Object.entries(beats)) {
+    const group = fragments.filter(el => Number(el.dataset.fragmentIndex) === index);
+    if (!group.length || group.some(el => (el.dataset.saBeat ?? el.dataset.saGeneratedBeat ?? beat) !== beat)) {
+      findings.push({severity: 'error', message: `Beat ${beat} is missing or grouped at the wrong index ${index}`});
+    }
+    if (group.length && group.every(el => el.matches('.sa-trigger')) && !driven.has(index)) {
+      findings.push({severity: 'error', message: `Beat ${beat} creates an empty click at index ${index}`});
+    }
   }
-  return overflow;
+  for (const binding of bindings) {
+    if (binding.dataset.saStepConflicts) {
+      findings.push({severity: 'error', message: `Binding ${binding.id || binding.localName} repeats step ${binding.dataset.saStepConflicts}`});
+    }
+  }
+  for (const index of driven) {
+    if (!indices.has(index)) findings.push({severity: 'error', message: `Binding step ${index} has no fragment group`});
+  }
+  for (const index of indices) {
+    if (index > 0 && !indices.has(index - 1)) {
+      findings.push({severity: 'error', message: `Fragment index gap before ${index}`});
+    }
+  }
+  for (const el of fragments) {
+    if (el.matches('[data-sa-beat], [data-sa-generated-beat], [data-sa-purpose], .sa-trigger') ||
+        driven.has(Number(el.dataset.fragmentIndex))) continue;
+    findings.push({severity: 'review', message: `Check purpose of ${el.id || el.localName} at index ${el.dataset.fragmentIndex}`});
+  }
+  return findings;
 }
 
 function checkMotion(print) {
@@ -190,31 +254,59 @@ async function inspectSlides(page, mode, options, result, fail, capture) {
     : page.evaluate(() => new Promise(resolve => {
       requestAnimationFrame(() => requestAnimationFrame(resolve));
     }));
-  for (const [number, slide] of slides.entries()) {
-    const key = `${slide.h}-${slide.v}`;
+  const selection = selectSlides(slides, options);
+  const fixed = new Map();
+  for (const slide of selection) {
+    const number = slides.indexOf(slide);
+    const key = slide.id ? `#${slide.id} (${slide.h}-${slide.v})` : `${slide.h}-${slide.v}`;
     const states = [];
-    result.slides.push({...slide, states});
+    const layouts = [];
+    const requested = options.steps ? [...new Set(options.steps)].sort((a, b) => a - b) : slide.steps;
+    const steps = requested.filter(step => slide.steps.includes(step));
+    if (requested.length !== steps.length && options.selectors?.length === 1) {
+      fail(`${key} has no step(s) ${requested.filter(step => !steps.includes(step)).join(', ')}`);
+    }
+    if (!steps.length) continue;
+    result.slides.push({...slide, states, layouts, checkedSteps: steps});
     await jump(slide, -1);
-    for (const [index, step] of slide.steps.entries()) {
-      if (index) await page.evaluate(() => Reveal.nextFragment());
+    const fragments = await page.evaluate(auditFragments);
+    result.slides.at(-1).fragments = fragments;
+    for (const finding of fragments) {
+      if (finding.severity === 'error') fail(`${key} ${finding.message}`);
+    }
+    for (const [index, step] of steps.entries()) {
+      if (options.steps) await jump(slide, step);
+      else if (index) await page.evaluate(() => Reveal.nextFragment());
       await pause();
       const state = await page.evaluate(readState);
       if (state.indices.h !== slide.h || state.indices.v !== slide.v || state.indices.f !== step) {
         fail(`${key} forward step ${step} reached ${JSON.stringify(state.indices)}`);
       }
       if (state.unresolved.length) fail(`${key} step ${step} has unresolved targets: ${JSON.stringify(state.unresolved)}`);
-      const overflow = mode === 'screen' ? await page.evaluate(findOverflow) : [];
-      if (overflow.length) fail(`${key} step ${step} overflows: ${JSON.stringify(overflow)}`);
+      if (mode === 'screen') {
+        const layout = await page.evaluate(inspectGeometry);
+        for (const item of layout.fixed) {
+          const baseline = fixed.get(item.name);
+          if (!baseline) fixed.set(item.name, {...item, slide: key, step});
+          else {
+            const drift = Math.max(...item.bounds.map((value, i) => Math.abs(value - baseline.bounds[i])));
+            if (drift > 3) layout.problems.push({type: 'layout-drift', element: item.name, pixels: Math.round(drift),
+              baselineSlide: baseline.slide, baselineStep: baseline.step});
+          }
+        }
+        layouts.push({step, ...layout});
+        if (layout.problems.length) fail(`${key} step ${step} geometry: ${JSON.stringify(layout.problems)}`);
+      }
       if (mode === 'reduced') {
         const moving = await page.evaluate(checkMotion, false);
         if (moving.length) fail(`${key} step ${step} has motion in reduced mode: ${moving.join(', ')}`);
       }
       states.push(state);
-      await capture(`slide-${key}-step-${index}.png`);
+      await capture(`slide-${slide.h}-${slide.v}-step-${slide.steps.indexOf(step)}.png`);
     }
 
     // Exercise navigation separately so the saved screenshots are the forward sequence.
-    if (!options.full || mode !== 'screen') continue;
+    if (!options.full || options.steps || mode !== 'screen') continue;
     async function compare(index, navigation) {
       await pause();
       const actual = await page.evaluate(readState);
@@ -309,7 +401,7 @@ async function run() {
     }
     if (options.full) {
       await check('reduced-motion', options.viewports[0], 'reduced');
-      await check('print', options.viewports[0], 'print');
+      if (options.print) await check('print', options.viewports[0], 'print');
     }
   } finally {
     await browser.close();
