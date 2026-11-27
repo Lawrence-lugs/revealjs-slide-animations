@@ -85,7 +85,7 @@ Supporting detail.
 :::
 ```
 
-Wrap siblings in `.sa-cards` for consistent gaps. Use `.sa-focus` with `.custom` to keep inactive cards visible.
+Wrap siblings in `.sa-cards` for consistent gaps. Use `.sa-focus` with `.custom` to keep inactive cards visible. For an existing row or list item, use `.fragment.custom.sa-focus-plain` to change opacity while preserving its border and background.
 
 ::: {.sa-cards}
 
@@ -210,7 +210,7 @@ This helper assumes affine (linear) axes. For log/polar axes or arbitrary curves
 
 ## Animate Mermaid without changing its layout
 
-Wrap the original Mermaid cell in a uniquely identified div. Assign semantic classes in Mermaid, for example `class F sa-fetch`. Keep the full graph in one cell to avoid re-layout at every click. Inspect the rendered SVG to identify edges; Mermaid versions differ.
+Wrap the original Mermaid cell in a uniquely identified div. Assign semantic classes in Mermaid, for example `class F sa-fetch`. Keep the full graph in one cell to avoid re-layout at every click. Inspect the rendered SVG to identify edges. If a Quarto-rendered HTML label clips, add `.sa-mermaid` to the diagram wrapper. Set `--sa-mermaid-max-width` on that wrapper to override the inline width cap and verify the labels still fit their nodes.
 
 ```js
 SlideAnimations.bindElements("#diagram", {

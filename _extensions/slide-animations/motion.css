@@ -31,6 +31,14 @@
   opacity:1; border-color:var(--sa-accent);
   background:color-mix(in srgb,var(--sa-accent) 10%,transparent);
 }
+.reveal .fragment.custom.sa-focus-plain {
+  visibility:visible; opacity:var(--sa-dim);
+  transition:opacity var(--sa-duration) var(--sa-ease);
+}
+.reveal .fragment.custom.sa-focus-plain.current-fragment {opacity:1;}
+/* Opt in on the wrapper around a Quarto-rendered Mermaid diagram. */
+.reveal .sa-mermaid svg.mermaid-js {max-width:var(--sa-mermaid-max-width, 100%)!important;}
+.reveal .sa-mermaid svg.mermaid-js foreignObject {overflow:visible!important;}
 .reveal .fragment.custom.sa-highlight {visibility:visible;opacity:1;transition:color var(--sa-duration);}
 .reveal .fragment.custom.sa-highlight.current-fragment {color:var(--sa-accent);}
 .reveal .fragment.sa-draw {visibility:visible;opacity:1;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset var(--sa-duration) linear;}
@@ -50,7 +58,8 @@
 }
 @media print {
  .reveal .sa-flow {animation:none!important;}
- .reveal .fragment.custom.sa-focus {opacity:1!important;}
+ .reveal .fragment.custom.sa-focus,
+ .reveal .fragment.custom.sa-focus-plain {opacity:1!important;}
  .reveal .fragment.sa-draw {stroke-dashoffset:0!important;}
 }
 
@@ -67,6 +76,8 @@
  .reveal .sa-element-flow {animation:none!important;}
 }
 @media print {
- .reveal .sa-element {opacity:1!important;transition:none!important;}
+ .reveal .sa-element,
+ .reveal .sa-element.sa-element-hidden,
+ .reveal .sa-element.sa-element-dim {opacity:1!important;transition:none!important;pointer-events:auto;}
  .reveal .sa-element-flow {animation:none!important;}
 }

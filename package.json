@@ -1,1 +1,14 @@
-{"name":"revealjs-slide-animations","private":true,"version":"0.1.0","scripts":{"test":"node --test tests/unit.cjs","test:browser":"playwright test"},"devDependencies":{"@playwright/test":"1.51.1"}}
+{
+  "name": "revealjs-slide-animations",
+  "private": true,
+  "version": "0.2.0",
+  "scripts": {
+    "test": "node --test tests/unit.cjs",
+    "test:browser": "playwright test",
+    "qa:deck": "node scripts/qa-deck.cjs",
+    "check:extension": "node scripts/check-extension.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.51.1"
+  }
+}

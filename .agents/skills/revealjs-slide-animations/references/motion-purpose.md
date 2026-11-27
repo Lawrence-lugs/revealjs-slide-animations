@@ -115,4 +115,4 @@ For every scene, list each moving thing and answer:
 - If it is ambient, does it pass the ambient test in section 7?
 - Does any card, screenshot, or clip card have continuous motion (drift, zoom, bob)? Remove it.
 - At every second, is there one clear focal motion, or is the viewer deliberately given time to read?
-- Run `scripts/motion-audit.mjs`. Every region listed as SUSTAINED must be justified by the answers above. A BLOCK region with sustained motion is almost always a defect.
+- Review the rendered slide at each click. Check sustained motion while reading, after leaving the slide, in reduced motion and in print. See [browser QA](quarto-and-qa.md).
