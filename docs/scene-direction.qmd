@@ -30,7 +30,7 @@ html-math-method: mathml
     </div>
   </div>
   <div class="fragment sa-enter-up" data-fragment-index="3">
-    <aside class="lesson-aside">The supervisor owns the preview and publication.</aside>
+    <div role="note" class="lesson-aside">The supervisor owns the preview and publication.</div>
   </div>
 </div>
 ```
@@ -103,7 +103,7 @@ html-math-method: mathml
 </div>
 </div>
 <div class="fragment sa-enter-up" data-fragment-index="2">
-  <aside class="lesson-aside">Dry run: inspect the proposed changes and warnings before writing files.</aside>
+  <div role="note" class="lesson-aside">Dry run: inspect the proposed changes and warnings before writing files.</div>
 </div>
 </div>
 ```
@@ -165,7 +165,7 @@ The curve crosses the load line.
   </div>
 </div>
 <div class="fragment sa-enter-up" data-fragment-index="1">
-  <aside class="lesson-aside">Compare the export with the original, including embedded figures.</aside>
+  <div role="note" class="lesson-aside">Compare the export with the original, including embedded figures.</div>
 </div>
 </div>
 ```
@@ -191,17 +191,18 @@ versioning/</code>
 ```{=html}
 <div class="lesson-stage">
   <div class="placement placed">
-    <strong>Filed</strong><span data-id="moving-folder" class="folder-chip">▰ bias/</span>
+    <strong>Filed</strong>
     <article class="lesson-card destination" data-id="materials">
       <h3>materials/</h3>
-      <pre><code>devices/
-  └─
-versioning/</code>
-    </pre>
+      <div class="folder-tree">
+        <code>devices/</code>
+        <div class="folder-child">└─ <span data-id="moving-folder" class="folder-chip">▰ bias/</span></div>
+        <code>versioning/</code>
+      </div>
   </article>
 </div>
 <div class="fragment sa-enter-up" data-fragment-index="0">
-  <aside class="lesson-aside">Match the existing track and topic structure.</aside>
+  <div role="note" class="lesson-aside">Match the existing track and topic structure.</div>
 </div>
 </div>
 ```
@@ -318,6 +319,7 @@ title: Bias
     <circle class="lesson-traveler" cx="90" cy="18" r="7" aria-hidden="true"/>
   </svg>
   <div class="lesson-notes">
+    <p class="lesson-prompt">How does a local edit become a checked preview?</p>
     <p class="fragment current-visible" data-fragment-index="0">Run <code>make full-preview</code>.</p>
     <p class="fragment current-visible" data-fragment-index="1">Open localhost:8000. Use PORT=9000 if the port is occupied.</p>
     <p class="fragment current-visible" data-fragment-index="2">Check the layout, images, sidebar and links.</p>
@@ -358,6 +360,7 @@ title: Bias
     <circle class="lesson-traveler" cx="90" cy="18" r="7" aria-hidden="true"/>
   </svg>
   <div class="lesson-notes">
+    <p class="lesson-prompt">What has to happen between a passing test and a live page?</p>
     <p class="fragment current-visible" data-fragment-index="0">Confirm the local checks pass.</p>
     <p class="fragment current-visible" data-fragment-index="1">Use a descriptive commit message and credit the contributor.</p>
     <p class="fragment current-visible" data-fragment-index="2">Push the reviewed change to main.</p>

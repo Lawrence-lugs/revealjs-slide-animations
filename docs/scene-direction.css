@@ -10,7 +10,11 @@
 .placement {position:relative; height:7.5em}
 .destination {position:absolute; left:45%; width:44%}
 .folder-chip {position:absolute; z-index:1; left:3%; top:2em; padding:.2em .6em; font-family:monospace; background:#f3deb8; border-radius:.2em}
-.placed .folder-chip {left:51%; top:3.25em}
+.folder-tree {display:grid; gap:.1em; font-family:monospace; font-size:.82em}
+.folder-child {display:flex; gap:.25em; align-items:center; padding-left:.6em}
+.placed .folder-chip {position:static; display:inline-block}
+.lesson-notes:has(.visible) .lesson-prompt {visibility:hidden}
+@media print {.lesson-prompt {display:none}}
 .lesson-flow {width:100%; display:block}
 .lesson-flow rect {fill:#edf4f2; stroke:#476d78; stroke-width:2}
 .lesson-flow text {fill:#172d32; font-size:21px}
