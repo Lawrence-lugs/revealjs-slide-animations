@@ -127,11 +127,23 @@ test('DOM geometry detects clipped menus and labels and broken paths', async ({p
 test('the matched folder travels while its destination stays put', async ({page}) => {
   await go(page, 'pick-folder');
   const chip = page.locator('section.present [data-id="moving-folder"]');
+  await expect(page.locator('section.present')).toHaveAttribute('data-auto-animate', /^(?:true)?$/);
   const before = await page.evaluate(inspectGeometry);
   const start = await chip.boundingBox();
-  await page.evaluate(() => Reveal.next());
+  await page.evaluate(() => {
+    Reveal.on('autoanimate', () => {window.folderAutoAnimated = true;});
+    Reveal.next();
+  });
   await expect(page.locator('section.present')).toHaveId('drop-folder');
+  await expect.poll(() => page.evaluate(() => window.folderAutoAnimated)).toBe(true);
+  await expect(chip).toHaveAttribute('data-auto-animate-target', /.+/);
   await expect.poll(async () => (await chip.boundingBox()).x).toBeGreaterThan(start.x + 150);
   const after = await page.evaluate(inspectGeometry);
   expect(after.fixed).toEqual(before.fixed);
+
+  await page.emulateMedia({reducedMotion: 'reduce'});
+  await go(page, 'pick-folder');
+  await page.evaluate(() => Reveal.next());
+  await expect(chip).toHaveAttribute('data-auto-animate-target', /.+/);
+  await expect(chip).toHaveCSS('transition-duration', '0s');
 });

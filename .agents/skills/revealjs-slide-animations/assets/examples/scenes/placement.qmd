@@ -1,4 +1,4 @@
-## Place the submitted folder {#pick-folder .auto-animate}
+## Place the submitted folder {#pick-folder auto-animate="true"}
 
 ```{=html}
 <div class="sa-scene sa-grid">
@@ -11,7 +11,7 @@
 </div>
 ```
 
-## Place the submitted folder {#drop-folder .auto-animate}
+## Place the submitted folder {#drop-folder auto-animate="true"}
 
 ```{=html}
 <div class="sa-scene sa-grid">

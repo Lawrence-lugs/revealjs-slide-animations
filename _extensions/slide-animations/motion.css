@@ -142,3 +142,6 @@ html.print-pdf .reveal .sa-current-note.fragment {visibility:visible!important;o
 .reveal .sa-print-final {display:none;}
 @media print {.reveal .sa-print-final {display:revert;}}
 html.print-pdf .reveal .sa-print-final {display:revert;}
+@media (prefers-reduced-motion:reduce) {
+  .reveal [data-auto-animate] .sa-scene [data-auto-animate-target] {transition-duration:0ms!important;}
+}
