@@ -9,13 +9,13 @@ A small CSS/JS library and an agent skill for meaningful presenter-controlled te
 
 ## Install or update the complete authoring kit
 
-Run one command from the consuming Quarto project with Node 22 and npm:
+Run this from the consuming Quarto project with Node 22 and npm to install from the current `main`.
 
 ```sh
-npx --yes https://github.com/Lawrence-lugs/revealjs-slide-animations/archive/refs/heads/main.tar.gz install
+npx --yes "github:Lawrence-lugs/revealjs-slide-animations#main" install
 ```
 
-For a reproducible install, replace `refs/heads/main` in the URL with the full approved commit SHA. Run the same command with a newer SHA to upgrade. This GitHub tarball is directly executable by npx and requires no npm registry release.
+For a reproducible install, replace `#main` with `#<full-commit-sha>` or a release tag. To upgrade a pinned install, run the same command with the new revision.
 
 The installer locates the nearest Quarto project or accepts `--project DIR`. It installs the renderer into `_extensions/Lawrence-lugs/slide-animations/` and the complete authoring kit into `.agents/skills/revealjs-slide-animations/`. Commit both directories and `.slide-animations-lock.json`. The receipt fingerprints the installed source files, including examples and QA. Use `check` in place of `install` to compare a project against a selected package revision. The installer reports duplicate skill copies found in standard locations. Review conflicts before using `--replace-existing` to migrate a modified or unmanaged copy.
 
