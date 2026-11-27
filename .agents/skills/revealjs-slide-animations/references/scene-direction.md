@@ -1,6 +1,6 @@
 # Directing a presenter-controlled explainer
 
-Read the [worked storyboard](https://lawrence-lugs.github.io/revealjs-slide-animations/scene-direction.html) or inspect the [editable slide source](https://github.com/Lawrence-lugs/revealjs-slide-animations/blob/main/docs/scene-direction.qmd). A deck can draw its figures live using ordinary HTML and SVG. Design the content first and choose primitives that can realize it.
+Read the [worked storyboard](https://lawrence-lugs.github.io/revealjs-slide-animations/scene-direction.html) or inspect the [editable slide source](../assets/examples/scene-direction.qmd). A deck can draw its figures live using ordinary HTML and SVG. Design the content first and choose primitives that can realize it.
 
 | Source idea | Composition and motion to consider |
 |---|---|

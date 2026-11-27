@@ -1,7 +1,7 @@
 {
   "name": "revealjs-slide-animations",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "test": "node --test tests/unit.cjs",
     "test:browser": "playwright test",
@@ -10,5 +10,13 @@
   },
   "devDependencies": {
     "@playwright/test": "1.51.1"
-  }
+  },
+  "bin": {
+    "slide-animations": "bin/slide-animations.cjs"
+  },
+  "files": [
+    "bin/",
+    "_extensions/slide-animations/",
+    ".agents/skills/revealjs-slide-animations/"
+  ]
 }

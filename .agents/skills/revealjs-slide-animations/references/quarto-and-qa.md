@@ -11,7 +11,7 @@ For inline SVG, use a Pandoc raw HTML fence (`{=html}`) around the entire SVG. B
 
 ## Reusable browser QA
 
-The Quarto extension runs with its bundled CSS and JS. The QA runner lives in the [upstream repository](https://github.com/Lawrence-lugs/revealjs-slide-animations) and uses Node 22 and Playwright. From a checkout of that repository:
+The Quarto extension runs with its bundled CSS and JS. The [QA runner](../scripts/qa-deck.cjs) ships beside the installed examples. From the installed skill directory, set up its Node 22 dependencies and run:
 
 ```sh
 npm install
@@ -23,10 +23,4 @@ A local HTML path also works for self-contained output with relative assets. Use
 
 The runner uses each rendered slide's horizontal and vertical Reveal indices. It captures initial and forward states at 1280×720 and 1024×768, checks state after reverse, jump, rapid fragment changes and re-entry, and checks reduced-motion and Reveal PDF layouts. The report flags overflow outside the viewport, page errors and unresolved bindings. Review screenshots for clipped text inside figures, visual overlap and whether the finished slide teaches the intended idea. Add deck-specific assertions for content, prints and custom animations.
 
-Compare an installed copy against the current reference checkout with:
-
-```sh
-npm run check:extension -- /path/to/project/_extensions/Lawrence-lugs/slide-animations
-```
-
-The script prints both manifest versions and checks the runtime files byte for byte. Update the reference checkout first when checking against upstream. Review local customizations before replacing the vendored files.
+Compare the installed runtime and skill with a pinned kit by running its npx installer with the `check` command. Review reported paths and duplicate skill definitions before updating.

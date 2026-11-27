@@ -1,6 +1,12 @@
 ---
 title: "From submission to publication"
 subtitle: "A presenter-controlled editing walkthrough"
+format:
+  revealjs:
+    width: 1280
+    height: 720
+    margin: 0.06
+    revealjs-plugins: [slide-animations]
 css: scene-direction.css
 html-math-method: mathml
 ---

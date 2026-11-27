@@ -7,16 +7,27 @@ A small CSS/JS library and an agent skill for meaningful presenter-controlled te
 - [Examples](https://lawrence-lugs.github.io/revealjs-slide-animations/examples.html)
 - [Usage guide](https://lawrence-lugs.github.io/revealjs-slide-animations/usage-guide.html)
 
-## Install
+## Install or update the complete authoring kit
+
+Run one command from the consuming Quarto project with Node 22 and npm:
 
 ```sh
-quarto add Lawrence-lugs/revealjs-slide-animations
-quarto add emilhvitfeldt/quarto-revealjs-magic-move
+npx --yes https://github.com/Lawrence-lugs/revealjs-slide-animations/archive/refs/heads/main.tar.gz install
 ```
 
-Enable `revealjs-plugins: [slide-animations, magic-move]` under the Reveal.js format. Magic Move is optional. For plain Reveal.js, use the CSS and JS in `_extensions/slide-animations` and register `SlideAnimations` as a plugin.
+For a reproducible install, replace `refs/heads/main` in the URL with the full approved commit SHA. Run the same command with a newer SHA to upgrade. This GitHub tarball is directly executable by npx and requires no npm registry release.
 
-The agent skill lives at `.agents/skills/revealjs-slide-animations`. Copy it to your project's skills folder; use the usage guide as its API reference.
+The installer locates the nearest Quarto project or accepts `--project DIR`. It installs the renderer into `_extensions/Lawrence-lugs/slide-animations/` and the complete authoring kit into `.agents/skills/revealjs-slide-animations/`. Commit both directories and `.slide-animations-lock.json`. The receipt fingerprints the installed source files, including examples and QA. Use `check` in place of `install` to compare a project against a selected package revision. The installer reports duplicate skill copies found in standard locations. Review conflicts before using `--replace-existing` to migrate a modified or unmanaged copy.
+
+Enable the plugin on the decks that use it. Your existing Quarto configuration and theme are preserved:
+
+```yaml
+format:
+  revealjs:
+    revealjs-plugins: [slide-animations]
+```
+
+The installed skill contains the editable gallery decks and their CSS under `assets/examples/`. Magic Move is optional for decks that use it. Install that third-party plugin with `quarto add emilhvitfeldt/quarto-revealjs-magic-move`. To install just the renderer, Quarto's native `quarto add Lawrence-lugs/revealjs-slide-animations` remains supported.
 
 ## Local development
 
@@ -33,15 +44,12 @@ Mermaid uses its existing renderer. The generic `bindElements` adapter applies r
 
 ## Deck QA
 
-The extension runs in Quarto with CSS and JavaScript. Install the optional Node
-22 and Playwright tools in a checkout of this repository to review any rendered
-deck:
+From the installed skill directory, set up the optional browser tooling once:
 
 ```sh
 npm install
 npx playwright install chromium
-npm run qa:deck -- http://localhost:8000/slides/deck.html --expect-count 12
-npm run check:extension -- /path/to/project/_extensions/Lawrence-lugs/slide-animations
+npm run qa:deck -- http://localhost:8000/slides/deck.html
 ```
 
 QA writes screenshots and a JSON report to `test-results/deck-qa` and returns a

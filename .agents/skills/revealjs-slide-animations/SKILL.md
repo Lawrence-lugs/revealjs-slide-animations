@@ -13,6 +13,10 @@ Read the [scene direction playbook](references/scene-direction.md) before classi
 
 The lecturer owns the pace. Use motion to explain a change, direct attention, or stage an explanation. Keep reading targets still between clicks.
 
+## Installed examples
+
+Read the local [visual storyboard](assets/examples/scene-direction.qmd) and [companion CSS](assets/examples/scene-direction.css) when designing compositions. Use the [technical examples](assets/examples/examples.qmd) for animated Mermaid, scientific plots and circuits, and the [usage guide](assets/examples/usage-guide.qmd) for API patterns. Browser QA ships in [scripts/qa-deck.cjs](scripts/qa-deck.cjs).
+
 ## Read first
 
 - [Worked decisions for text-heavy slides](references/demonstration-design.md)

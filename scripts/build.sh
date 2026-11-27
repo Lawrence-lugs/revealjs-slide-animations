@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/../docs"
+cp ../.agents/skills/revealjs-slide-animations/assets/examples/* .
 mkdir -p _extensions
 cp -R ../_extensions/slide-animations _extensions/
 if [[ ! -d _extensions/emilhvitfeldt/magic-move ]]; then

@@ -14,14 +14,13 @@ subtitle: "A compact API for presenter-controlled explanations"
 ## Install in Quarto
 
 ```bash
-quarto add Lawrence-lugs/revealjs-slide-animations
-quarto add emilhvitfeldt/quarto-revealjs-magic-move
+npx --yes https://github.com/Lawrence-lugs/revealjs-slide-animations/archive/refs/heads/main.tar.gz install
 ```
 
 ```yaml
 format:
   revealjs:
-    revealjs-plugins: [slide-animations, magic-move]
+    revealjs-plugins: [slide-animations]
     theme: [white, slides.scss]
 ```
 

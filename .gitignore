@@ -6,3 +6,8 @@ node_modules/
 test-results/
 playwright-report/
 __pycache__/
+
+/docs/examples.qmd
+/docs/usage-guide.qmd
+/docs/scene-direction.qmd
+/docs/scene-direction.css
