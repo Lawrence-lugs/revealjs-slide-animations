@@ -31,7 +31,15 @@ cp "$skill"/assets/examples/scene-direction.{css,qmd} lectures/
 quarto render lectures/scene-direction.qmd
 grep -q 'motion.js' lectures/scene-direction.html
 if [[ "${1:-}" == --browser ]]; then
-  (cd "$skill" && npm install && node scripts/qa-deck.cjs "$tmp/course/lectures/scene-direction.html" --expect-count 14 --no-screenshots --out "$tmp/qa")
+  shift
+  (cd "$skill" && npm install && node scripts/qa-deck.cjs "$tmp/course/lectures/scene-direction.html" --expect-count 14 --out "$tmp/qa" "$@")
+  node - "$tmp/qa/report.json" <<'JS'
+const assert = require('node:assert/strict');
+const {mode, runs} = require(process.argv[2]);
+assert.equal(mode, 'smoke');
+assert.deepEqual(runs.map(run => run.name), ['screen-1280x720']);
+assert(runs[0].slides.every(slide => slide.states.length === slide.steps.length));
+JS
 fi
 echo 'local edit' >> "$skill/SKILL.md"
 if "${kit[@]}" install; then exit 1; fi

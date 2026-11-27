@@ -44,7 +44,7 @@ Mermaid uses its existing renderer. The generic `bindElements` adapter applies r
 
 ## Deck QA
 
-From the installed skill directory, set up the optional browser tooling once:
+For routine slide review, walk the rendered deck and follow the [final browser checklist](.agents/skills/revealjs-slide-animations/references/quarto-and-qa.md#final-browser-checklist). For an automated smoke scan, set up the optional browser tooling from the installed skill directory:
 
 ```sh
 npm install
@@ -52,9 +52,7 @@ npx playwright install chromium
 npm run qa:deck -- http://localhost:8000/slides/deck.html
 ```
 
-QA writes screenshots and a JSON report to `test-results/deck-qa` and returns a
-nonzero exit code for detected problems. Use `--help` for local HTML, viewport,
-settle-time, and output options. The project preview URL is preferable for
-decks with root-relative assets or media. See the
-[installed skill's setup and QA instructions](.agents/skills/revealjs-slide-animations/references/quarto-and-qa.md)
-for integration and print notes.
+The smoke scan checks forward states at one viewport and writes a JSON report to
+`test-results/deck-qa`. Add `--screenshots` to capture each state. Use `--full`
+for navigation, multiple viewports, reduced motion and print checks. The project
+preview URL is preferable for decks with root-relative assets or media.

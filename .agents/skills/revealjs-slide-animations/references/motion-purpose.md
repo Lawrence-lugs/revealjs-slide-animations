@@ -115,4 +115,4 @@ For every scene, list each moving thing and answer:
 - If it is ambient, does it pass the ambient test in section 7?
 - Does any card, screenshot, or clip card have continuous motion (drift, zoom, bob)? Remove it.
 - At every second, is there one clear focal motion, or is the viewer deliberately given time to read?
-- Review the rendered slide at each click. Check sustained motion while reading, after leaving the slide, in reduced motion and in print. See [browser QA](quarto-and-qa.md).
+- Review the rendered slide at each teaching click. Check sustained motion while reading and after leaving the slide. Spot-check reduced motion and print when the deck targets those modes. See the [final browser checklist](quarto-and-qa.md#final-browser-checklist).

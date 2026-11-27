@@ -61,7 +61,7 @@ test ! -e lectures/week01/_extensions
 if [[ "${1:-}" == --browser ]]; then
   shift
   node "$root/scripts/qa-deck.cjs" lectures/week01/deck.html \
-    --expect-count 4 --settle-ms 400 --out "$root/test-results/nested-deck" "$@"
+    --full --expect-count 4 --settle-ms 400 --out "$root/test-results/nested-deck" "$@"
   node - "$root/test-results/nested-deck/report.json" <<'JS'
 const assert = require('node:assert/strict');
 const report = require(process.argv[2]);

@@ -8,10 +8,12 @@ const {chromium} = require('@playwright/test');
 
 const usage = `Usage: npm run qa:deck -- <deck.html|URL> [options]
   --out DIR           Screenshots and JSON report (default test-results/deck-qa)
-  --viewport WxH      Repeat to override the defaults (1280x720 and 1024x768)
-  --settle-ms N       Wait after navigation for custom transitions (default 1000)
+  --full              Run navigation, second viewport, reduced-motion and print checks
+  --viewport WxH      Repeat to override the viewport (default 1280x720, plus 1024x768 in full mode)
+  --settle-ms N       Wait after navigation (default two frames, or 1000 ms with --full)
   --timeout-ms N      Readiness timeout for deck and bindings (default 15000)
   --expect-count N    Expected number of slides, including title and dividers
+  --screenshots       Save screenshots (enabled by default with --full)
   --no-screenshots    Skip screenshots
   --chromium PATH     Use an existing Chromium executable
   --help              Show this message`;
@@ -28,10 +30,12 @@ function readOptions() {
     allowPositionals: true,
     options: {
       help: {type: 'boolean'}, out: {type: 'string', default: 'test-results/deck-qa'},
-      viewport: {type: 'string', multiple: true, default: ['1280x720', '1024x768']},
-      'settle-ms': {type: 'string', default: '1000'},
+      full: {type: 'boolean'},
+      viewport: {type: 'string', multiple: true},
+      'settle-ms': {type: 'string'},
       'timeout-ms': {type: 'string', default: '15000'},
       'expect-count': {type: 'string'},
+      screenshots: {type: 'boolean'},
       'no-screenshots': {type: 'boolean'},
       chromium: {type: 'string'}
     }
@@ -41,18 +45,21 @@ function readOptions() {
   const [input] = positionals;
   const url = /^https?:\/\//i.test(input) ? new URL(input) : pathToFileURL(path.resolve(input));
   url.hash = '';
-  const viewports = values.viewport.map(size => {
+  const full = Boolean(values.full);
+  const sizes = values.viewport ?? (full ? ['1280x720', '1024x768'] : ['1280x720']);
+  const viewports = sizes.map(size => {
     if (!/^\d+x\d+$/.test(size)) throw new Error(`Invalid viewport ${size}`);
     const [width, height] = size.split('x').map(dimension => integer(dimension, 'viewport dimension', 1));
     return {width, height};
   });
   return {
-    url, viewports, out: path.resolve(values.out),
-    settle: integer(values['settle-ms'], '--settle-ms', 0),
+    url, viewports, full, out: path.resolve(values.out),
+    settle: integer(values['settle-ms'] ?? (full ? '1000' : '0'), '--settle-ms', 0),
     timeout: integer(values['timeout-ms'], '--timeout-ms', 1),
     expectedCount: values['expect-count'] === undefined ? undefined :
       integer(values['expect-count'], '--expect-count', 1),
-    screenshots: !values['no-screenshots'], executablePath: values.chromium
+    screenshots: !values['no-screenshots'] && (full || values.screenshots),
+    executablePath: values.chromium
   };
 }
 
@@ -178,7 +185,11 @@ async function inspectSlides(page, mode, options, result, fail, capture) {
   async function jump(slide, step) {
     await page.evaluate(({h, v, step}) => Reveal.slide(h, v, step), {...slide, step});
   }
-  const pause = () => page.waitForTimeout(options.settle);
+  const pause = () => options.settle
+    ? page.waitForTimeout(options.settle)
+    : page.evaluate(() => new Promise(resolve => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    }));
   for (const [number, slide] of slides.entries()) {
     const key = `${slide.h}-${slide.v}`;
     const states = [];
@@ -203,7 +214,7 @@ async function inspectSlides(page, mode, options, result, fail, capture) {
     }
 
     // Exercise navigation separately so the saved screenshots are the forward sequence.
-    if (mode !== 'screen') continue;
+    if (!options.full || mode !== 'screen') continue;
     async function compare(index, navigation) {
       await pause();
       const actual = await page.evaluate(readState);
@@ -244,7 +255,8 @@ async function run() {
     executablePath: options.executablePath,
     args: options.url.protocol === 'file:' ? ['--allow-file-access-from-files'] : []
   });
-  const report = {url: options.url.href, runs: []};
+  const report = {url: options.url.href, mode: options.full ? 'full' : 'smoke', runs: []};
+  console.log(`Running ${report.mode} deck checks`);
 
   async function check(name, viewport, mode) {
     const result = {name, viewport, problems: [], slides: []};
@@ -253,7 +265,8 @@ async function run() {
       if (!result.problems.includes(message)) result.problems.push(message);
     };
     const folder = path.join(options.out, name);
-    const page = await browser.newPage({viewport, reducedMotion: mode === 'reduced' ? 'reduce' : 'no-preference'});
+    const reducedMotion = !options.full || mode === 'reduced' ? 'reduce' : 'no-preference';
+    const page = await browser.newPage({viewport, reducedMotion});
     const capture = async (filename, fullPage = false) => {
       if (options.screenshots) {
         await fs.mkdir(folder, {recursive: true});
@@ -267,6 +280,11 @@ async function run() {
         await page.emulateMedia({media: 'print'});
       }
       await loadDeck(page, url, options, fail);
+      if (!options.full) {
+        // Smoke checks inspect settled layout. Reveal's Auto-Animate can still run
+        // while prefers-reduced-motion is set, so disable its slide transitions.
+        await page.evaluate(() => Reveal.configure({autoAnimate: false, transition: 'none'}));
+      }
       if (mode === 'print') {
         await page.waitForSelector('.pdf-page', {state: 'attached', timeout: options.timeout});
         result.pages = await page.locator('.pdf-page').count();
@@ -289,8 +307,10 @@ async function run() {
     for (const viewport of options.viewports) {
       await check(`screen-${viewport.width}x${viewport.height}`, viewport, 'screen');
     }
-    await check('reduced-motion', options.viewports[0], 'reduced');
-    await check('print', options.viewports[0], 'print');
+    if (options.full) {
+      await check('reduced-motion', options.viewports[0], 'reduced');
+      await check('print', options.viewports[0], 'print');
+    }
   } finally {
     await browser.close();
     await fs.writeFile(path.join(options.out, 'report.json'), JSON.stringify(report, null, 2) + '\n');
