@@ -21,4 +21,6 @@ For a selected slide, record the initial view and fill the click plan.
 
 Check that the final state retains the information learners need. Define what backward navigation, direct jumps and print should show. Test shared indices in rendered HTML after any Lua filters have run.
 
+For each process or choice, add a trace such as `sample.md with an H1 → convert → sample.qmd with front matter`. Record where the viewer sees the same object before and after the operation. Include the referenced text at the same index. Record new demonstrations, staged reading, cues added to existing visuals, and restyled existing fragments separately in the final inventory. Navigation checks verify playback. Manually compare the delivered states to each planned trace.
+
 Complete a simple teaching pass across the inventory before refining individual motion. On delivery, reconcile every slide and live figure against the original inventory and explain any partial or blocked treatment.

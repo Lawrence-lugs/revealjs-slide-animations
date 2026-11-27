@@ -51,3 +51,18 @@ test('Mermaid progressive reveal and focus',async({page})=>{
  await expect(diagram.locator('.node.sa-fetch')).toHaveClass(/sa-element-dim/);
  await expect(diagram.locator('.node.sa-decode')).not.toHaveClass(/sa-element-dim/);
 });
+
+test('converter demonstrates each edit with its explanation', async ({page}) => {
+  await page.goto('/usage-guide.html#/document-conversion');
+  const slide = page.locator('#document-conversion');
+  const output = slide.locator('#conversion-output code');
+  await expect(output).toHaveText('# Bias\n[Notes](notes.md)');
+  await page.evaluate(() => Reveal.nextFragment());
+  await expect(output).toHaveText('---\ntitle: Bias\n---\n[Notes](notes.md)');
+  await expect(slide.locator('.current-fragment')).toContainText('metadata');
+  await page.evaluate(() => Reveal.nextFragment());
+  await expect(output).toHaveText('---\ntitle: Bias\n---\n[Notes](notes.qmd)');
+  await expect(slide.locator('.current-fragment')).toContainText('Retarget');
+  await page.evaluate(() => Reveal.prevFragment());
+  await expect(output).toHaveText('---\ntitle: Bias\n---\n[Notes](notes.md)');
+});

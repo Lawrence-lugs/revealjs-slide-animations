@@ -225,6 +225,56 @@ SlideAnimations.bindElements("#diagram", {
 
 The API also accepts a raw JSON script with `type="application/json" data-sa-elements` and a `scope` selector, as in the example deck. It waits for late-rendered SVG and reapplies state when the diagram is replaced.
 
+## Demonstrate a transformation {#document-conversion}
+
+:::: {.columns}
+::: {.column width="45%"}
+**Source page**
+
+```markdown
+# Bias
+[Notes](notes.md)
+```
+
+<div class="fragment custom sa-focus-plain" data-fragment-index="0">Move the heading into metadata.</div>
+<div class="fragment custom sa-focus-plain" data-fragment-index="1">Retarget the link to the converted page.</div>
+:::
+
+::: {.column width="50%"}
+**Output page**
+
+<div id="conversion-output" data-sa-qa>
+
+```text
+# Bias
+[Notes](notes.md)
+```
+
+</div>
+:::
+::::
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const bind = () => {
+    const output = document.querySelector('#conversion-output code');
+    const source = '# Bias\n[Notes](notes.md)';
+    const metadata = '---\ntitle: Bias\n---\n';
+    SlideAnimations.bindState(output, {
+      initial: {text: source},
+      steps: [
+        {index: 0, state: {text: metadata + '[Notes](notes.md)'}},
+        {index: 1, state: {text: metadata + '[Notes](notes.qmd)'}}
+      ],
+      duration: 0,
+      render: state => { output.textContent = state.text; }
+    });
+  };
+  if (Reveal.isReady()) bind();
+  else Reveal.on('ready', bind);
+});
+</script>
+
 ## Element-state API
 
 Each step is a complete state, not a delta.
