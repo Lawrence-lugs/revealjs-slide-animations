@@ -66,6 +66,15 @@ async function main() {
     const current = () => page.locator('section.present .current-fragment').first();
     await go(updated, 'editable-folder-check');
     assert.equal(await page.locator('#editable-folder-check aside.notes').count(), 1);
+    const sourcePanel = page.locator('#editable-folder-check .sa-walkthrough-columns > .sa-panel');
+    const chrome = await sourcePanel.evaluate(panel => {
+      const style = getComputedStyle(panel);
+      return {padding: parseFloat(style.paddingInlineStart), border: style.borderInlineStartWidth};
+    });
+    assert(chrome.padding > 12, 'Reveal reset removed the card padding');
+    assert.equal(chrome.border, '1px');
+    assert.equal(await sourcePanel.locator('.sa-filetree .sa-directory').textContent().then(text => text.trim()), 'images/');
+    assert.equal(await sourcePanel.locator('.sa-filetree li > ul .sa-file').textContent().then(text => text.trim()), 'branch-map.svg');
     await next();
     assert.match(await current().textContent(), /branch-naming --check/);
     await next();
@@ -107,6 +116,7 @@ async function main() {
     await page.waitForFunction(x => Reveal.getCurrentSlide().querySelector('[data-id="moving-devices"]')
       .getBoundingClientRect().left > x + 150, origin.x);
     const settled = await page.locator('#editable-place-after [data-sa-qa-fixed="materials"]').boundingBox();
+    assert.equal(await page.locator('#editable-place-after .sa-filetree [data-id="moving-devices"]').count(), 1);
     for (const dimension of Object.keys(fixed)) assert(Math.abs(fixed[dimension] - settled[dimension]) < 1);
     await page.emulateMedia({reducedMotion: 'reduce'});
 

@@ -26,6 +26,20 @@ A native callout at the end of an exhibits or walkthrough slide gets the final c
 
 A progressive Mermaid scene reveals a unique rendered edge and its label between consecutive nodes. On a branch item, set `sa-from="earlierNodeId"` to connect from an earlier explanation. For parallel edges or endpoints whose IDs contain underscores, set `sa-edge="edgeId"` and optionally `sa-edge-label="edgeId"`. Declare the edge ID in Mermaid if the renderer supports explicit IDs. Use focus mode when the complete topology should remain visible before discussion. Selectors and unusual diagram mappings can use the [runtime API](api.md).
 
+## File trees and card spacing
+
+In a walkthrough source or placement destination, write a Markdown bullet list with each file name in backticks. End directory names with `/` and indent child entries as a nested list. The filter lays out the files and folders as a tree. Add `.sa-filetree` to another subsection heading to use the same layout there.
+
+```markdown
+### Submitted archive {.sa-source}
+
+- `overview.md`
+- `images/`
+  - `branch-map.svg`
+```
+
+Set `--sa-panel-padding` in deck CSS for tighter cards. For a deeper placement tree, set `--sa-dropzone-size` to the same value on both slides so the destination frame stays aligned while the file moves.
+
 ## Shared objects and custom motion
 
 For cross-slide placement, put `.sa-placement sa-destination="materials"` on both slide headings. Write two subsections on each slide and mark the fixed one `.sa-destination`. Put an inline span such as `[devices/]{sa-object="moving-folder"}` in the incoming column on one slide and in the destination column on the next. The filter sets up native Auto-Animate, a stable destination, and the geometry check. Set `sa-object` on a subsection heading to match the whole panel across slides with Auto-Animate. Use a different destination ID for an unrelated pair.

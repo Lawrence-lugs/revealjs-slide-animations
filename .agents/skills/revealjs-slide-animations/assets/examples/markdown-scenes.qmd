@@ -38,7 +38,8 @@ A lab can belong in the course and still be hard to find.
 Extract `branch-naming.zip` outside the repository.
 
 - `conventions.md`
-- `images/branch-map.svg`
+- `images/`
+  - `branch-map.svg`
 
 ### Run the dry run {.sa-command}
 

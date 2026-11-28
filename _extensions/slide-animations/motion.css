@@ -146,6 +146,97 @@ html.print-pdf .reveal .sa-print-final {display:revert;}
   .reveal [data-auto-animate] .sa-scene [data-auto-animate-target] {transition-duration:0ms!important;}
 }
 
+/* Reveal's element reset outranks the low-specificity scene defaults. */
+.reveal .sa-author-scene :where(.sa-panel,.sa-terminal) {
+  padding:var(--sa-panel-padding,.66em .85em);
+  border:1px solid var(--sa-scene-border);
+  border-radius:.42em;
+  background:var(--sa-scene-surface);
+  box-shadow:0 .14em .4em color-mix(in srgb, currentColor 8%, transparent);
+}
+.reveal .sa-author-scene :where(.sa-panel,.sa-terminal) > p {
+  margin-block:.4em;
+}
+.reveal .sa-author-scene :where(.sa-panel,.sa-terminal) > :where(:first-child) {margin-block-start:0;}
+.reveal .sa-author-scene :where(.sa-panel,.sa-terminal) > :where(:last-child) {margin-block-end:0;}
+.reveal .sa-exhibits-scene > .sa-grid {align-items:stretch;}
+.reveal .sa-placement-grid > .sa-dropzone {block-size:var(--sa-dropzone-size,8.5em);}
+.reveal .sa-placement-grid > .sa-panel:has(> .sa-panel-title:only-child) {
+  border-style:dashed;
+  background:transparent;
+  box-shadow:none;
+}
+.reveal .sa-author-scene .sa-exhibit.current-fragment {
+  border-color:var(--sa-accent);
+  background:color-mix(in srgb, var(--sa-accent) 10%, var(--sa-scene-surface));
+  outline:none;
+}
+
+.reveal .sa-author-scene .sa-filetree {
+  margin-block:.48em 0;
+  border:1px solid var(--sa-scene-border);
+  border-radius:.3em;
+  background:color-mix(in srgb, currentColor 3%, transparent);
+  font-family:var(--r-code-font,monospace);
+  font-size:.84em;
+}
+.reveal .sa-author-scene .sa-filetree ul {
+  display:block;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.reveal .sa-author-scene .sa-filetree > ul {padding:.24em .35em;}
+.reveal .sa-author-scene .sa-filetree li {position:relative;margin:0;}
+.reveal .sa-author-scene .sa-filetree li > ul {
+  margin-inline-start:.77em;
+  padding-inline-start:.82em;
+  border-inline-start:1px solid var(--sa-scene-border);
+}
+.reveal .sa-author-scene .sa-filetree li li::before {
+  content:"";
+  position:absolute;
+  inset-inline-start:-.82em;
+  inset-block-start:.82em;
+  inline-size:.62em;
+  border-block-start:1px solid var(--sa-scene-border);
+}
+.reveal .sa-author-scene .sa-filetree-entry {
+  display:flex;
+  align-items:baseline;
+  gap:.5em;
+  min-width:0;
+  padding:.2em .34em;
+  border-radius:.18em;
+}
+.reveal .sa-author-scene .sa-filetree-entry.sa-directory {font-weight:600;}
+.reveal .sa-author-scene .sa-filetree-entry::before {
+  content:"";
+  flex:0 0 auto;
+  box-sizing:border-box;
+  inline-size:.62em;
+  block-size:.78em;
+  border:1px solid currentColor;
+  border-radius:.12em;
+  opacity:.58;
+}
+.reveal .sa-author-scene .sa-filetree-entry.sa-directory::before {
+  inline-size:.8em;
+  block-size:.58em;
+  background:color-mix(in srgb, var(--sa-accent) 34%, transparent);
+  box-shadow:-.17em -.16em 0 -.1em currentColor;
+}
+.reveal .sa-author-scene :is(.sa-filetree-entry,.sa-chip) > code {font-size:inherit;}
+.reveal .sa-author-scene .sa-filetree-entry code {background:none;padding:0;}
+.reveal .sa-author-scene .sa-chip {
+  display:inline-block;
+  padding:.12em .42em;
+  border:1px solid var(--sa-scene-border);
+  border-radius:.24em;
+  background:color-mix(in srgb, var(--sa-accent) 16%, var(--sa-scene-surface));
+  font-family:var(--r-code-font,monospace);
+}
+
 /* Generated Markdown scenes share the same panel and fragment styles. */
 .reveal .fragment.custom.sa-exhibit {opacity:1;visibility:visible;}
 .reveal .sa-exhibit.current-fragment {
@@ -155,6 +246,17 @@ html.print-pdf .reveal .sa-print-final {display:revert;}
 .reveal .sa-author-scene .sa-walkthrough-result {border-inline-start:.18em solid var(--sa-accent);}
 .reveal .sa-author-scene :is(.sa-panel,.sa-terminal) pre {width:100%;margin:.35em 0;}
 .reveal .sa-author-scene .sa-layout-accumulate {display:grid;gap:.5em;}
+.reveal .sa-author-scene > .sa-layout-accumulate:has(> :nth-child(4)) {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:stretch;
+  font-size:.94em;
+  --sa-panel-padding:.5em .68em;
+}
+.reveal .sa-author-scene .sa-code-phrase {
+  font-family:var(--r-code-font,monospace);
+  white-space:pre-wrap;
+}
+.reveal .sa-author-scene .sa-code-phrase > code {white-space:nowrap;}
 .reveal .sa-author-scene .sa-layout-replace {display:grid;}
 .reveal .sa-author-scene .sa-layout-replace > * {grid-area:1 / 1;}
 .reveal .sa-layout-replace:has(> .fragment.visible) > .sa-opening,
@@ -171,7 +273,12 @@ html.print-pdf .reveal .sa-print-final {display:revert;}
   .reveal .sa-author-scene :is(.sa-opening,.sa-walkthrough-stage,.sa-initial-note) {visibility:visible!important;opacity:1!important;}
   .reveal :is(.sa-mermaid-progressive,.sa-mermaid-focus) svg :is(.node,.flowchart-link,.edgeLabel) {opacity:1!important;}
 }
-.reveal .sa-author-scene .sa-panel-title {font-size:1.05em;text-transform:none;}
+.reveal .sa-author-scene .sa-panel-title {
+  margin-block:0 .48em;
+  font-size:1.08em;
+  line-height:1.16;
+  text-transform:none;
+}
 .reveal .sa-author-scene .sa-panel-title p {margin:0;}
 .reveal .sa-author-scene .sa-walkthrough-columns {--sa-grid-template:minmax(0, 2fr) minmax(0, 3fr);}
 .reveal .sa-author-scene :is(.sa-panel,.sa-terminal) pre code {white-space:pre-wrap;overflow-wrap:anywhere;}
