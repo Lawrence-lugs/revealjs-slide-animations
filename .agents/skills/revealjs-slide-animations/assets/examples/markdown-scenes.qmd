@@ -50,6 +50,11 @@ python3 scripts/contribution_to_qmd.py branch-naming --dry-run
 
 Check the proposed `conventions.qmd` and investigate missing links.
 
+```{.yaml .number-lines}
+output: conventions.qmd
+warning: unresolved link to labs/branch-map
+```
+
 ::: {.callout-note}
 Read warnings as prompts to inspect the result.
 :::

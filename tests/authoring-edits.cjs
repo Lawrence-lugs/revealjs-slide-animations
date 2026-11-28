@@ -72,6 +72,7 @@ async function main() {
     assert.match(await current().textContent(), /Check the generated files/);
     await next();
     assert.match(await current().textContent(), /Inspect the report/);
+    assert.equal(await current().locator('pre.numberSource').count(), 1);
     await next();
     assert.match(await current().textContent(), /Read warnings/);
 
