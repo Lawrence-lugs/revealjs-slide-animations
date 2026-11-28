@@ -1,0 +1,11 @@
+```{=html}
+<svg id="editable-junction-plot" viewBox="0 0 640 240" width="640" height="240" role="img" aria-labelledby="editable-junction-title" data-sa-qa>
+  <title id="editable-junction-title">Depletion width and field magnitude across a PN junction</title>
+  <rect x="100" y="28" width="220" height="57" fill="#efd5c7"/>
+  <rect x="320" y="28" width="220" height="57" fill="#d5dfed"/>
+  <rect data-region x="280" y="28" width="80" height="57" fill="#819597"/>
+  <path d="M 100 212 H 540 M 100 212 V 112" fill="none" stroke="currentColor"/>
+  <text x="100" y="105" font-size="17" fill="currentColor">Field magnitude</text>
+  <path data-field d="M 280 212 L 320 176 L 360 212" stroke="#334880" stroke-width="4" fill="none"/>
+</svg>
+```

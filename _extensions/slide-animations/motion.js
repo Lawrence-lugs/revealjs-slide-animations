@@ -93,13 +93,17 @@
   }
   // Animate existing elements, including asynchronously rendered Mermaid SVG.
   // A target is a scoped CSS selector, not a diagram-specific object model.
-  function bindElements(element,{targets,initial={},steps=[],unique=false}) {
+  function bindElements(element,{targets,initial={},steps=[],unique=false,optional=[]}) {
     if(typeof element==="string")element=document.querySelector(element);
     if(!element)throw Error("SlideAnimations: missing element scope");
+    const optionalTargets = new Set(optional);
     let latest=initial, previous=new Set(), disposed=false, pending=false;
     function apply(){
       if(disposed)return;
       const matches=Object.fromEntries(Object.entries(targets).map(([id,selector])=>[id,[...element.querySelectorAll(selector)]]));
+      for (const key of optionalTargets) {
+        if (matches[key]?.length !== 1) delete matches[key];
+      }
       const missing=Object.keys(matches).filter(id=>!matches[id].length);
       const ambiguous=unique ? Object.keys(matches).filter(id=>matches[id].length>1) : [];
       element.dataset.saMissing=missing.join(",");
@@ -197,7 +201,7 @@
     }).sort((a, b) => a.index - b.index);
   }
 
-  function bindMermaid(scope, {nodes = {}, edges = {}, labels = {}, selectors = {}, ...states}) {
+  function bindMermaid(scope, {nodes = {}, edges = {}, labels = {}, selectors = {}, connections = [], ...states}) {
     const targets = Object.create(null);
     for (const [type, entries] of Object.entries({nodes, edges, labels})) {
       for (const [key, identifier] of Object.entries(entries)) {
@@ -220,7 +224,19 @@
     for (const key of Object.keys(selectors)) {
       if (Object.hasOwn(targets, key)) throw new Error(`Duplicate Mermaid target ${key}`);
     }
-    return bindElements(element, {...states, targets: {...targets, ...selectors}, unique: true});
+    const optional = [];
+    for (const {key, from, to} of connections) {
+      if (Object.hasOwn(targets, key)) continue;
+      // Underscores are the renderer's endpoint separator. Explicit edge
+      // IDs disambiguate nodes whose IDs contain that separator.
+      if (from.includes("_") || to.includes("_")) continue;
+      const prefix = CSS.escape(`L_${from}_${to}_`);
+      const edgeId = `[data-id^="${prefix}"]`;
+      targets[key] = `svg path.flowchart-link:is([id^="${prefix}"], ${edgeId})`;
+      targets[key + " label"] = `svg .edgeLabel:has(${edgeId})`;
+      optional.push(key, key + " label");
+    }
+    return bindElements(element, {...states, targets: {...targets, ...selectors}, unique: true, optional});
   }
 
   function pointIn(element, destination, point) {
@@ -369,7 +385,7 @@
         if (config.hasAttribute("data-sa-bound")) return;
         try {
           const {scope, ...options} = JSON.parse(config.textContent);
-          bind(scope, options);
+          bind(scope ?? config.parentElement, options);
           config.dataset.saBound = "true";
         } catch (error) {
           config.dataset.saBound = "false";

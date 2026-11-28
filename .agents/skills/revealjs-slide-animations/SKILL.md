@@ -35,6 +35,8 @@ Read the local [visual storyboard](assets/examples/scene-direction.qmd) and [com
 
 ## Implementation
 
+Prefer [editable Markdown recipes](references/markdown-authoring.md) after designing the composition. Maintain prose, links, math, commands and ordinary diagrams in QMD. Let the filter generate layout containers and internal beat indices. For custom geometry or physical state, use a small companion asset keyed to named cues. Test a realistic edit to each new scene type by changing only the QMD and rendering again.
+
 Use native fragments for ordered reading and text–figure pairing, Auto-Animate for continuity, and `sa-focus-plain` for focus without changing typography or surfaces. Use named beats to synchronize prose and visuals, `bindMermaid` for an existing flowchart, and `bindState` for numerical drivers. Compute all dependent values and marks from the same driver. Decide in the storyboard whether a scene needs [Magic Move](references/animation-devices.md), a separate optional extension. Native Auto-Animate handles shared elements, and CSS or numeric drivers handle small known changes.
 
 Keep the supplied theme and its figure scaling intact. Preserve claims, equations, links, cross-references, meaningful figure content and teaching order. Recompose inside slides, redraw an illegible figure faithfully, or add a continuation slide when the teaching action needs one. Fit the presentation by changing the composition and retaining the source references. Use stable IDs and inspect the actual rendered SVG when mapping targets.

@@ -145,3 +145,36 @@ html.print-pdf .reveal .sa-print-final {display:revert;}
 @media (prefers-reduced-motion:reduce) {
   .reveal [data-auto-animate] .sa-scene [data-auto-animate-target] {transition-duration:0ms!important;}
 }
+
+/* Generated Markdown scenes share the same panel and fragment styles. */
+.reveal .fragment.custom.sa-exhibit {opacity:1;visibility:visible;}
+.reveal .sa-exhibit.current-fragment {
+  outline:.12em solid var(--sa-accent);outline-offset:-.12em;
+}
+.reveal .sa-author-scene .sa-takeaway {margin-top:.65em;}
+.reveal .sa-author-scene .sa-walkthrough-result {border-inline-start:.18em solid var(--sa-accent);}
+.reveal .sa-author-scene .sa-terminal pre {width:100%;margin:.35em 0;}
+.reveal .sa-author-scene .sa-layout-accumulate {display:grid;gap:.5em;}
+.reveal .sa-author-scene .sa-layout-replace {display:grid;}
+.reveal .sa-author-scene .sa-layout-replace > * {grid-area:1 / 1;}
+.reveal .sa-layout-replace:has(> .fragment.visible) > .sa-opening,
+.reveal .sa-layout-replace > .fragment.visible:has(~ .fragment.visible),
+.reveal .sa-note-slot:has(> .fragment.visible) > .sa-initial-note {visibility:hidden;opacity:0;}
+.reveal .sa-author-scene .sa-cue-note {margin-top:.45em;}
+.reveal .sa-mermaid-progressive[data-sa-ready="true"] svg .flowchart-link:not(.sa-element),
+.reveal .sa-mermaid-progressive[data-sa-ready="true"] svg .edgeLabel:not(.sa-element) {opacity:0;}
+.reveal .sa-mermaid-focus[data-sa-ready="true"] svg :is(.node,.flowchart-link,.edgeLabel):not(.sa-element) {
+  opacity:var(--sa-dim);
+}
+@media print {
+  .reveal .sa-author-scene .sa-layout-replace {display:block;}
+  .reveal .sa-author-scene :is(.sa-opening,.sa-walkthrough-stage,.sa-initial-note) {visibility:visible!important;opacity:1!important;}
+  .reveal :is(.sa-mermaid-progressive,.sa-mermaid-focus) svg :is(.node,.flowchart-link,.edgeLabel) {opacity:1!important;}
+}
+.reveal .sa-author-scene .sa-panel-title {font-size:1.05em;text-transform:none;}
+.reveal .sa-author-scene .sa-panel-title p {margin:0;}
+.reveal .sa-author-scene .sa-walkthrough-columns {--sa-grid-template:minmax(0, 2fr) minmax(0, 3fr);}
+.reveal .sa-author-scene .sa-terminal pre code {white-space:pre-wrap;overflow-wrap:anywhere;}
+.reveal .sa-author-scene .sa-terminal code.sourceCode > span {text-indent:0;padding-left:0;}
+.reveal .sa-author-scene .sa-terminal pre.numberSource code > span {left:0;}
+.reveal .sa-author-scene .sa-terminal pre.numberSource code > span > a:first-child::before {left:0;width:3ch;margin-right:.5em;}

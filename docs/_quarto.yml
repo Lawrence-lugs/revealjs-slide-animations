@@ -6,6 +6,7 @@ project:
     - usage-guide.qmd
     - scene-direction.qmd
     - scene-gallery.qmd
+    - markdown-scenes.qmd
 format:
   revealjs:
     theme: [white, slides.scss]

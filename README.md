@@ -7,6 +7,12 @@ A small CSS/JS library and an agent skill for meaningful presenter-controlled te
 - [Examples](https://lawrence-lugs.github.io/revealjs-slide-animations/examples.html)
 - [Usage guide](https://lawrence-lugs.github.io/revealjs-slide-animations/usage-guide.html)
 
+## Editable Markdown scenes
+
+The optional authoring filter turns decorated slide headings and ordinary Markdown into staged cards, walkthroughs, quizzes, and synchronized Mermaid diagrams. To enable it, add `slide-animations` to both `filters` and `revealjs-plugins` in the deck's Reveal format. The existing install command includes the filter.
+
+The gallery includes Markdown-only placement scenes and a junction animation wired to named cues. [Rendered examples](https://lawrence-lugs.github.io/revealjs-slide-animations/markdown-scenes.html) · [Authoring syntax](.agents/skills/revealjs-slide-animations/references/markdown-authoring.md)
+
 ## Install or update the complete authoring kit
 
 Run this from the consuming Quarto project with Node 22 and npm to install from the current `main`.

@@ -1,0 +1,120 @@
+---
+title: "Editable Markdown scenes"
+format:
+  revealjs:
+    revealjs-plugins: [slide-animations]
+    filters: [slide-animations]
+    html-math-method: mathml
+    include-after-body:
+      - text: '<script src="scenes/junction-motion.js"></script>'
+resources:
+  - scenes/junction-motion.js
+---
+
+# Contribute a lab
+
+## Curate an exhibit {#editable-curator .sa-exhibits}
+
+### Choose
+
+Check the source of the lab exercise.
+
+### Place
+
+Put the lab next to its prerequisites.
+
+### Label
+
+Use the page title to tell learners what they will measure.
+
+::: {.callout-note}
+A lab can belong in the course and still be hard to find.
+:::
+
+## Check the folder first {#editable-folder-check .sa-walkthrough sa-layout="accumulate"}
+
+### Extract the submission {.sa-source}
+
+Extract `branch-naming.zip` outside the repository.
+
+- `conventions.md`
+- `images/branch-map.svg`
+
+### Run the dry run {.sa-command}
+
+```sh
+python3 scripts/contribution_to_qmd.py branch-naming --dry-run
+```
+
+### Inspect the report {.sa-result}
+
+Check the proposed `conventions.qmd` and investigate missing links.
+
+::: {.callout-note}
+Read warnings as prompts to inspect the result.
+:::
+
+::: {.notes}
+Pause after the dry run and ask what the warning tells us.
+:::
+
+## Place the submitted folder {#editable-place-before .sa-placement sa-destination="materials"}
+
+### Incoming
+
+[`devices/`]{sa-object="moving-devices"}
+
+### Materials {.sa-destination}
+
+- `fundamentals/`
+
+## Place the submitted folder {#editable-place-after .sa-placement sa-destination="materials"}
+
+### Incoming
+
+### Materials {.sa-destination}
+
+- `fundamentals/`
+- [`devices/`]{sa-object="moving-devices"}
+
+## Preview and publish {#editable-publish .sa-mermaid-steps}
+
+```{mermaid}
+flowchart LR
+  local["Local preview"] --> check["Check links"]
+  check approved@-->|Verified| push["Push to main"]
+  check --> stop["Fix and retry"]
+```
+
+1. [Build the local preview.]{sa-node="local"} Use the same inputs as the site.
+2. [Check the links.]{sa-node="check"} Open them from the rendered page.
+3. [Publish the verified change.]{sa-node="push" sa-edge="approved" sa-edge-label="approved"} Push to `main`.
+4. [A broken link sends you back to editing.]{sa-node="stop" sa-from="check"} Rebuild the preview after fixing it.
+
+## Predict the result {#editable-quiz .sa-quiz}
+
+### What does a dry run change?
+
+It reports the planned output. Review missing references against the [Mermaid documentation](https://mermaid.js.org/).
+
+### How does reverse bias affect the depletion width?
+
+For this illustrative model, $W \propto \sqrt{V_{bi} + V_R}$.
+
+# Bias the junction
+
+## Raise reverse bias {#editable-junction .sa-cues}
+
+{{< include scenes/junction-figure.qmd >}}
+
+### Increase the reverse bias {sa-cue="raise-bias"}
+
+The depleted region widens. The curve shows an increase in peak field magnitude.
+
+### Return to the starting bias {sa-cue="return-bias"}
+
+The depletion width and field return to their starting values.
+
+## Further reading {#editable-reference}
+
+See the [Quarto presentation guide](https://quarto.org/docs/presentations/revealjs/) for ordinary slide features.

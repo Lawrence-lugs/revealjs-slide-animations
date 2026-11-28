@@ -34,11 +34,16 @@ cp "$skill"/assets/examples/scene-gallery.qmd lectures/
 cp -R "$skill"/assets/examples/scenes lectures/
 quarto render lectures/scene-gallery.qmd
 grep -q 'data-sa-timeline' lectures/scene-gallery.html
+cp "$skill"/assets/examples/markdown-scenes.qmd lectures/
+quarto render lectures/markdown-scenes.qmd
+grep -q 'sa-walkthrough-scene' lectures/markdown-scenes.html
 if [[ "${1:-}" == --browser ]]; then
   shift
   (cd "$skill" && npm install && node scripts/qa-deck.cjs "$tmp/course/lectures/scene-direction.html" --expect-count 14 --out "$tmp/qa" "$@")
   (cd "$skill" && node scripts/qa-deck.cjs "$tmp/course/lectures/scene-gallery.html" --expect-count 20 --viewport 1280x720 --viewport 1024x768 --out "$tmp/gallery-qa" "$@")
   (cd "$skill" && node scripts/qa-deck.cjs "$tmp/course/lectures/scene-gallery.html" --slide '#branch-timeline' --steps initial,0,2 --out "$tmp/scene-qa" "$@")
+  (cd "$skill" && node scripts/qa-deck.cjs "$tmp/course/lectures/markdown-scenes.html" --expect-count 11 --viewport 1280x720 --viewport 1024x768 --out "$tmp/markdown-qa" "$@")
+  node "$root/tests/authoring-edits.cjs" "$tmp/course/lectures/markdown-scenes.qmd" "$@"
   node - "$tmp/scene-qa/report.json" <<'JS'
 const assert = require('node:assert/strict');
 const [scene] = require(process.argv[2]).runs[0].slides;
